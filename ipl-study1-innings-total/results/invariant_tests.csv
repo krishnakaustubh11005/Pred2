@@ -1,0 +1,7 @@
+check,pass
+historical reconstruction,TRUE
+current target and realised length cannot alter predictors,TRUE
+unseen venue uses earlier league fallback,TRUE
+"verified XI, finite inputs and chronological boundaries",TRUE
+ratio violation stops and records a failing row,TRUE
+batting identity follows pre-innings toss metadata,TRUE

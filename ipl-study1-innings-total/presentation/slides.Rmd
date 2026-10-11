@@ -1,0 +1,136 @@
+---
+output:
+  ioslides_presentation:
+    self_contained: true
+    widescreen: true
+    smaller: false
+    css: slides.css
+    mathjax: null
+    includes:
+      before_body: no_cover.html
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+here::i_am("presentation/slides.Rmd")
+knitr::opts_chunk$set(echo=FALSE, warning=FALSE, message=FALSE)
+rr <- function(x) readr::read_csv(here::here("results",paste0(x,".csv")),show_col_types=FALSE)
+selection <- rr("final_selection"); metrics <- rr("test_metrics")
+winner <- metrics %>% filter(model==selection$model)
+interval <- rr("interval_summary"); dims <- rr("dimension_checks") %>% filter(block=="Combined")
+fig <- function(id) {f<-rr("figure_manifest") %>% filter(.data$id==!!id); knitr::include_graphics(here::here("figures",f$filename))}
+```
+
+## 1. Objective: a forecast before the first ball
+
+Predict a team's **actual first-innings total**, including extras.
+
+Prediction time: **after the toss and initial XI announcement, before play**.
+
+Analysts can compare the eventual score with a realistic pre-match expectation.
+
+## 1. Objective: what the study asks
+
+- Can we beat the historical mean and earlier venue average?
+- Do player strength and season context improve forecasts?
+- Can PCA, FA and venue groups simplify the model?
+- How much do influential innings and unequal variance matter?
+
+Success means lower error on the reserved final season; the result may be negative.
+
+## 2. Data: earlier seasons teach, later seasons assess
+
+```{r split, out.width='100%'}
+fig(1)
+```
+
+One row per first innings. Source: Cricsheet CSV, with JSON for initial-XI reconstruction.
+
+## 2. Data: scores have substantial variation
+
+```{r distribution, out.width='100%'}
+fig(2)
+```
+
+Shortened innings remain part of the actual-total question.
+
+## 3. Methods: build history, then fit regression
+
+- R imports, cleans and aggregates deliveries.
+- Every historical feature uses **strictly earlier dates**.
+- Simple regression starts with venue; multiple regression adds team strength and context.
+- Rolling season assessment compares full, AIC and BIC procedures.
+
+Every candidate pool and fitted regression must pass the course's predictor limit.
+
+## 3. Methods: simplify related measurements
+
+**PCA:** summarises total variation in strength measurements.
+
+**Factor Analysis:** models shared variation plus uniqueness.
+
+**Clustering:** groups similar historical venue profiles.
+
+Scaling, loadings, factor weights and cluster centres are learned from training seasons.
+
+## 3. Methods: diagnose and evaluate honestly
+
+Influence checks lead to sensitivity analysis, not automatic deletion.
+
+Log models, WLS and HC3 address different variance concerns.
+
+Validation chooses the model; the latest completed season supplies one frozen evaluation.
+
+RMSE measures large-error sensitivity; MAE measures typical absolute error.
+
+## 4. Results: venue is an imperfect scoring anchor
+
+```{r venue-fit, out.width='100%'}
+fig(6)
+```
+
+The confidence band concerns the average relationship; individual innings vary much more.
+
+## 4. Results: compression must preserve useful signal
+
+```{r compression, out.width='100%'}
+fig(15)
+```
+
+The combined analysis retains `r dims$retained_pcs` PCs and `r dims$retained_factors` factors.
+
+## 4. Results: venue groups describe historical context
+
+```{r venue-groups, out.width='100%'}
+fig(18)
+```
+
+Groups remain frozen when later innings are predicted.
+
+## 4. Results: unusual innings deserve inspection
+
+```{r influence, out.width='100%'}
+fig(19)
+```
+
+Valid extremes stay relevant to the forecasting problem.
+
+## 4. Results: the frozen comparison decides practical value
+
+```{r comparison, out.width='100%'}
+fig(27)
+```
+
+Selected using validation: **`r selection$model`**. Test interval coverage: **`r round(100*interval$empirical_coverage,1)`%**.
+
+## 5. Conclusion: an expectation with measured uncertainty
+
+**`r selection$model`**: test RMSE **`r round(winner$rmse,1)` runs**, MAE **`r round(winner$mae,1)` runs**.
+
+`r if(winner$rmse < min(metrics$rmse[metrics$model %in% c("B0 training mean","B1 venue history")])) "The selected model beats both baselines on test." else "The selected model does not beat both baselines on test."`
+
+Predictive R-squared is **`r round(winner$r2,3)`**: most individual-innings variation remains unexplained.
+
+Shortened matches, sparse history and season shifts limit precision.
+
+The main learning: apply every method with a purpose, diagnose it, and explain what its evidence supports.

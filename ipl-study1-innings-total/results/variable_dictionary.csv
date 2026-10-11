@@ -1,0 +1,18 @@
+name,description,type,units,construction,known_before_innings
+venue_avg_first_inn,Earlier venue mean first-innings total,numeric,runs,Mean of earlier-date first-innings totals at this venue; earlier league mean if none,yes
+venue_sd_first_inn,Earlier venue standard deviation,numeric,runs,Sample SD of earlier-date venue totals; earlier league SD if fewer than two,yes
+venue_prior_matches,Number of earlier venue innings,numeric,innings,Count of first innings played at this venue on earlier dates,yes
+venue_boundary_rate,Earlier venue boundary-delivery share,numeric,proportion,"Mean earlier venue innings boundary-delivery fraction, including all delivery events; earlier league fallback",yes
+season_index,Calendar season position,numeric,index,"Calendar season year minus the earliest source year, plus the index offset",yes
+toss_winner_batting_first,Toss winner is batting first,numeric,binary,"Binary indicator that the toss winner is the team batting first, checked against toss decision",yes
+bat_average,XI mean career batting average,numeric,runs/dismissal,XI mean of player bat runs divided by at least one dismissal; sparse histories blend with earlier league rates,yes
+bat_strike_rate,XI mean career strike rate,numeric,runs/100 balls,XI mean of player bat runs per hundred faced balls; wides excluded from faced balls,yes
+bat_boundary_pct,XI mean career boundary percentage,numeric,percent,XI mean of actual boundary events per hundred faced balls; running fours excluded,yes
+bat_top_order_sr,Strike rate of three XI players with earliest historical batting positions,numeric,runs/100 balls,Mean strike rate of the three XI players with earliest historical mean batting positions; registry IDs break ties,yes
+bat_depth,XI count with historical strike rate above threshold,numeric,players,Count of XI players whose earlier shrunken career strike rate exceeds the saved depth threshold,yes
+team_last10_total,Team mean of most recent historical first innings,numeric,runs,"Mean of the team's most recent earlier first innings, up to the saved history window; league fallback",yes
+bowl_economy,Opposition XI mean economy,numeric,runs/over,"Opposition XI mean charged runs per over of legal balls; byes, leg-byes and penalties excluded",yes
+bowl_strike_rate,Opposition XI mean bowling strike rate,numeric,balls/wicket,Opposition XI mean legal balls divided by at least one bowler-credited wicket,yes
+bowl_dot_pct,Opposition XI mean dot percentage,numeric,percent,Opposition XI mean percent of legal deliveries conceding no total runs,yes
+bowl_wickets_match,Opposition XI mean wickets per bowling appearance,numeric,wickets/appearance,"Opposition XI mean credited wickets per match with a bowling appearance, rather than per XI selection",yes
+bowl_death_economy,Opposition XI mean death-over economy,numeric,runs/over,Opposition XI mean charged runs per over in the final scheduled overs; sparse death-ball history blends with league rate,yes

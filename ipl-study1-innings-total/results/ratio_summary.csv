@@ -1,0 +1,140 @@
+label,fits_checked,minimum_N,maximum_p,all_pass
+AIC candidate pool,12,340,17,TRUE
+BIC candidate pool,12,340,17,TRUE
+candidate pool including interaction and polynomial,1,1037,19,TRUE
+Exclude shortened training innings,1,1018,4,TRUE
+Factor score regression,1,1037,9,TRUE
+Full candidate pool,12,340,17,TRUE
+Interaction candidate,1,1037,7,TRUE
+lm internal: .squared_error ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_strike_rate,3,1037,4,TRUE
+lm internal: e2 ~ fit + I(fit^2),4,1037,2,TRUE
+lm internal: first_innings_total ~ 1,1,340,0,TRUE
+lm internal: first_innings_total ~ bat_strike_rate,3,340,1,TRUE
+lm internal: first_innings_total ~ season_index + bat_average,1,578,2,TRUE
+lm internal: first_innings_total ~ season_index + bat_average + bat_strike_rate,4,578,3,TRUE
+lm internal: first_innings_total ~ season_index + bat_average + bat_strike_rate +      bat_depth,5,400,4,TRUE
+lm internal: first_innings_total ~ season_index + bat_average + bat_strike_rate +      bat_depth + bowl_economy,2,459,5,TRUE
+lm internal: first_innings_total ~ season_index + bat_average + bat_strike_rate +      bat_depth + bowl_economy + bowl_dot_pct,2,459,6,TRUE
+lm internal: first_innings_total ~ season_index + bat_strike_rate,7,400,2,TRUE
+lm internal: first_innings_total ~ season_index + bat_strike_rate + bat_depth,2,400,3,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn,1,1037,1,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_average + bat_strike_rate,2,758,5,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_average + bat_strike_rate + bat_boundary_pct +      bat_depth + bowl_economy + bowl_dot_pct,4,400,9,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_average + bat_strike_rate + bat_boundary_pct +      bat_depth + bowl_economy + bowl_strike_rate + bowl_dot_pct,2,578,10,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_average + bat_strike_rate + bat_boundary_pct +      bat_depth + team_last10_total + bowl_economy + bowl_dot_pct,4,698,10,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_average + bat_strike_rate + bat_boundary_pct +      bat_depth + team_last10_total + bowl_economy + bowl_strike_rate +      bowl_dot_pct,2,578,11,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_average + bat_strike_rate + bat_depth,8,400,6,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_average + bat_strike_rate + bat_depth +      bowl_dot_pct,2,698,7,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_average + bat_strike_rate + bat_depth +      bowl_economy,5,400,7,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_average + bat_strike_rate + bat_depth +      bowl_economy + bowl_dot_pct,14,400,8,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_average + bat_strike_rate + bat_depth +      I(season_index^2),1,1037,7,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_average + bat_strike_rate + bat_depth +      team_last10_total,1,818,7,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_average + bat_strike_rate + bat_depth +      team_last10_total + bowl_dot_pct,1,818,8,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_average + bat_strike_rate + bat_depth +      team_last10_total + bowl_economy,2,1037,8,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_average + bat_strike_rate + bat_depth +      team_last10_total + bowl_economy + bowl_dot_pct,14,638,9,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_average + bat_strike_rate + bat_depth +      team_last10_total + bowl_economy + bowl_dot_pct + bowl_death_economy,2,638,10,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_average + bat_strike_rate + bat_depth +      team_last10_total + bowl_economy + bowl_strike_rate + bowl_dot_pct +      bowl_death_economy,2,638,11,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_average + bat_strike_rate + bat_depth +      venue_avg_first_inn:season_index,1,1037,7,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_average + bat_strike_rate + bat_depth +      venue_cluster,1,1037,7,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_strike_rate,10,518,4,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_strike_rate + bat_depth,3,818,5,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_strike_rate + bat_depth + bowl_dot_pct,1,892,6,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + bat_strike_rate + bat_depth + bowl_economy +      bowl_dot_pct,1,892,7,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + toss_winner_batting_first + bat_average +      bat_strike_rate + bat_boundary_pct + bat_depth + team_last10_total +      bowl_economy + bowl_dot_pct,4,758,11,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + toss_winner_batting_first + bat_average +      bat_strike_rate + bat_boundary_pct + bat_depth + team_last10_total +      bowl_economy + bowl_dot_pct + bowl_death_economy,2,758,12,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_boundary_rate +      season_index + toss_winner_batting_first + bat_average +      bat_strike_rate + bat_depth + team_last10_total + bowl_economy +      bowl_dot_pct,6,892,10,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + bat_average + bat_strike_rate +      bat_boundary_pct + bat_depth + bowl_economy + bowl_dot_pct,2,400,10,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + bat_average + bat_strike_rate +      bat_boundary_pct + bat_depth + bowl_economy + bowl_dot_pct +      bowl_wickets_match,4,400,11,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + bat_average + bat_strike_rate +      bat_boundary_pct + bat_depth + bowl_economy + bowl_strike_rate +      bowl_dot_pct + bowl_wickets_match,2,519,12,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + bat_average + bat_strike_rate +      bat_boundary_pct + bat_depth + team_last10_total + bowl_economy +      bowl_dot_pct,4,698,11,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + bat_average + bat_strike_rate +      bat_boundary_pct + bat_depth + team_last10_total + bowl_economy +      bowl_dot_pct + bowl_death_economy,2,698,12,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + bat_average + bat_strike_rate +      bat_boundary_pct + bat_depth + team_last10_total + bowl_economy +      bowl_strike_rate + bowl_dot_pct + bowl_death_economy,4,638,13,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + bat_average + bat_strike_rate +      bat_depth + bowl_economy + bowl_dot_pct,4,459,9,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + bat_average + bat_strike_rate +      bat_depth + bowl_economy + bowl_dot_pct + bowl_wickets_match,4,459,10,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + bat_average + bat_strike_rate +      bat_depth + team_last10_total + bowl_economy + bowl_dot_pct,2,818,10,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + bat_average + bat_strike_rate +      bat_depth + team_last10_total + bowl_economy + bowl_strike_rate +      bowl_dot_pct + bowl_death_economy,2,638,12,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + toss_winner_batting_first +      bat_average + bat_strike_rate + bat_boundary_pct + bat_depth +      bowl_economy + bowl_dot_pct + bowl_wickets_match,2,459,12,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + toss_winner_batting_first +      bat_average + bat_strike_rate + bat_boundary_pct + bat_depth +      bowl_economy + bowl_strike_rate + bowl_dot_pct + bowl_wickets_match,2,519,13,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + toss_winner_batting_first +      bat_average + bat_strike_rate + bat_boundary_pct + bat_depth +      team_last10_total + bowl_economy + bowl_dot_pct,8,818,12,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + toss_winner_batting_first +      bat_average + bat_strike_rate + bat_boundary_pct + bat_depth +      team_last10_total + bowl_economy + bowl_dot_pct + bowl_death_economy,8,758,13,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + toss_winner_batting_first +      bat_average + bat_strike_rate + bat_boundary_pct + bat_depth +      team_last10_total + bowl_economy + bowl_dot_pct + bowl_wickets_match,2,459,13,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + toss_winner_batting_first +      bat_average + bat_strike_rate + bat_boundary_pct + bat_depth +      team_last10_total + bowl_economy + bowl_dot_pct + bowl_wickets_match +      bowl_death_economy,2,1037,14,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + toss_winner_batting_first +      bat_average + bat_strike_rate + bat_boundary_pct + bat_depth +      team_last10_total + bowl_economy + bowl_strike_rate + bowl_dot_pct +      bowl_death_economy,6,698,14,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + toss_winner_batting_first +      bat_average + bat_strike_rate + bat_boundary_pct + bat_depth +      team_last10_total + bowl_economy + bowl_strike_rate + bowl_dot_pct +      bowl_wickets_match + bowl_death_economy,2,698,15,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + toss_winner_batting_first +      bat_average + bat_strike_rate + bat_boundary_pct + bat_top_order_sr +      bat_depth + team_last10_total + bowl_economy + bowl_dot_pct +      bowl_wickets_match + bowl_death_economy,2,1037,15,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + toss_winner_batting_first +      bat_average + bat_strike_rate + bat_boundary_pct + bat_top_order_sr +      bat_depth + team_last10_total + bowl_economy + bowl_strike_rate +      bowl_dot_pct + bowl_death_economy,2,892,15,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + toss_winner_batting_first +      bat_average + bat_strike_rate + bat_boundary_pct + bat_top_order_sr +      bat_depth + team_last10_total + bowl_economy + bowl_strike_rate +      bowl_dot_pct + bowl_wickets_match + bowl_death_economy,2,892,16,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + toss_winner_batting_first +      bat_average + bat_strike_rate + bat_depth + bowl_economy +      bowl_dot_pct + bowl_wickets_match,2,459,11,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_prior_matches +      venue_boundary_rate + season_index + toss_winner_batting_first +      bat_average + bat_strike_rate + bat_depth + team_last10_total +      bowl_economy + bowl_dot_pct,4,892,11,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_boundary_rate + bat_average + bat_strike_rate + bat_boundary_pct +      bat_depth + bowl_economy + bowl_strike_rate + bowl_dot_pct,2,340,10,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_boundary_rate + season_index + bat_average + bat_strike_rate +      bat_boundary_pct + bat_depth + bowl_economy + bowl_strike_rate +      bowl_dot_pct,2,340,11,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_boundary_rate + season_index + bat_average + bat_strike_rate +      bat_boundary_pct + bat_depth + team_last10_total + bowl_economy +      bowl_strike_rate + bowl_dot_pct,2,578,12,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_boundary_rate + season_index + bat_average + bat_strike_rate +      bat_boundary_pct + bat_top_order_sr + bat_depth + team_last10_total +      bowl_economy + bowl_strike_rate + bowl_dot_pct,2,578,13,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_boundary_rate + season_index + bat_average + bat_strike_rate +      bat_boundary_pct + bat_top_order_sr + bat_depth + team_last10_total +      bowl_economy + bowl_strike_rate + bowl_dot_pct + bowl_wickets_match,2,578,14,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_boundary_rate + season_index + toss_winner_batting_first +      bat_average + bat_strike_rate + bat_boundary_pct + bat_depth +      bowl_economy + bowl_strike_rate + bowl_dot_pct,2,340,12,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_boundary_rate + season_index + toss_winner_batting_first +      bat_average + bat_strike_rate + bat_boundary_pct + bat_depth +      team_last10_total + bowl_economy + bowl_strike_rate + bowl_dot_pct,2,340,13,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_boundary_rate + season_index + toss_winner_batting_first +      bat_average + bat_strike_rate + bat_boundary_pct + bat_top_order_sr +      bat_depth + team_last10_total + bowl_economy + bowl_strike_rate +      bowl_dot_pct,2,340,14,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      bat_average + bat_strike_rate + bat_boundary_pct + bat_depth +      bowl_economy + bowl_dot_pct + bowl_wickets_match,2,400,12,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      bat_average + bat_strike_rate + bat_boundary_pct + bat_depth +      team_last10_total + bowl_economy + bowl_strike_rate + bowl_dot_pct +      bowl_death_economy,2,638,14,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      bat_average + bat_strike_rate + bat_boundary_pct + bat_depth +      team_last10_total + bowl_economy + bowl_strike_rate + bowl_dot_pct +      bowl_wickets_match + bowl_death_economy,2,638,15,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      bat_average + bat_strike_rate + bat_boundary_pct + bat_top_order_sr +      bat_depth + bowl_economy + bowl_dot_pct + bowl_wickets_match,2,400,13,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      bat_average + bat_strike_rate + bat_boundary_pct + bat_top_order_sr +      bat_depth + team_last10_total + bowl_economy + bowl_strike_rate +      bowl_dot_pct + bowl_wickets_match,2,578,15,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      bat_average + bat_strike_rate + bat_boundary_pct + bat_top_order_sr +      bat_depth + team_last10_total + bowl_economy + bowl_strike_rate +      bowl_dot_pct + bowl_wickets_match + bowl_death_economy,2,578,16,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      toss_winner_batting_first + bat_average + bat_strike_rate +      bat_boundary_pct + bat_depth + bowl_economy + bowl_strike_rate +      bowl_dot_pct + bowl_wickets_match,2,519,14,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      toss_winner_batting_first + bat_average + bat_strike_rate +      bat_boundary_pct + bat_depth + bowl_economy + bowl_strike_rate +      bowl_dot_pct + bowl_wickets_match + bowl_death_economy,2,519,15,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      toss_winner_batting_first + bat_average + bat_strike_rate +      bat_boundary_pct + bat_depth + team_last10_total + bowl_economy +      bowl_dot_pct,2,966,13,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      toss_winner_batting_first + bat_average + bat_strike_rate +      bat_boundary_pct + bat_depth + team_last10_total + bowl_economy +      bowl_dot_pct + bowl_death_economy,2,758,14,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      toss_winner_batting_first + bat_average + bat_strike_rate +      bat_boundary_pct + bat_depth + team_last10_total + bowl_economy +      bowl_dot_pct + bowl_wickets_match,2,459,14,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      toss_winner_batting_first + bat_average + bat_strike_rate +      bat_boundary_pct + bat_depth + team_last10_total + bowl_economy +      bowl_dot_pct + bowl_wickets_match + bowl_death_economy,4,459,15,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      toss_winner_batting_first + bat_average + bat_strike_rate +      bat_boundary_pct + bat_depth + team_last10_total + bowl_economy +      bowl_strike_rate + bowl_dot_pct,2,966,14,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      toss_winner_batting_first + bat_average + bat_strike_rate +      bat_boundary_pct + bat_depth + team_last10_total + bowl_economy +      bowl_strike_rate + bowl_dot_pct + bowl_death_economy,4,818,15,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      toss_winner_batting_first + bat_average + bat_strike_rate +      bat_boundary_pct + bat_depth + team_last10_total + bowl_economy +      bowl_strike_rate + bowl_dot_pct + bowl_wickets_match + bowl_death_economy,8,459,16,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      toss_winner_batting_first + bat_average + bat_strike_rate +      bat_boundary_pct + bat_top_order_sr + bat_depth + bowl_economy +      bowl_dot_pct + bowl_wickets_match,2,400,14,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      toss_winner_batting_first + bat_average + bat_strike_rate +      bat_boundary_pct + bat_top_order_sr + bat_depth + bowl_economy +      bowl_dot_pct + bowl_wickets_match + bowl_death_economy,2,400,15,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      toss_winner_batting_first + bat_average + bat_strike_rate +      bat_boundary_pct + bat_top_order_sr + bat_depth + bowl_economy +      bowl_strike_rate + bowl_dot_pct + bowl_wickets_match + bowl_death_economy,2,400,16,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      toss_winner_batting_first + bat_average + bat_strike_rate +      bat_boundary_pct + bat_top_order_sr + bat_depth + team_last10_total +      bowl_economy + bowl_dot_pct + bowl_wickets_match + bowl_death_economy,4,758,16,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      toss_winner_batting_first + bat_average + bat_strike_rate +      bat_boundary_pct + bat_top_order_sr + bat_depth + team_last10_total +      bowl_economy + bowl_strike_rate + bowl_dot_pct,2,340,15,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      toss_winner_batting_first + bat_average + bat_strike_rate +      bat_boundary_pct + bat_top_order_sr + bat_depth + team_last10_total +      bowl_economy + bowl_strike_rate + bowl_dot_pct + bowl_death_economy,6,340,16,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      toss_winner_batting_first + bat_average + bat_strike_rate +      bat_boundary_pct + bat_top_order_sr + bat_depth + team_last10_total +      bowl_economy + bowl_strike_rate + bowl_dot_pct + bowl_wickets_match +      bowl_death_economy,36,340,17,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      toss_winner_batting_first + FA1 + FA2 + FA3,1,1037,9,TRUE
+lm internal: first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +      venue_prior_matches + venue_boundary_rate + season_index +      toss_winner_batting_first + PCA1 + PCA2 + PCA3,1,1037,9,TRUE
+lm internal: first_innings_total ~ venue_boundary_rate + season_index + bat_average +      bat_strike_rate,1,758,4,TRUE
+lm internal: first_innings_total ~ venue_boundary_rate + season_index + bat_average +      bat_strike_rate + bat_depth,3,400,5,TRUE
+lm internal: first_innings_total ~ venue_boundary_rate + season_index + bat_average +      bat_strike_rate + bat_depth + bowl_economy + bowl_dot_pct,2,459,7,TRUE
+lm internal: first_innings_total ~ venue_boundary_rate + season_index + bat_strike_rate,2,818,3,TRUE
+lm internal: first_innings_total ~ venue_prior_matches + bat_average + bat_strike_rate +      bat_depth,1,519,4,TRUE
+lm internal: first_innings_total ~ venue_prior_matches + bat_average + bat_strike_rate +      bat_depth + bowl_economy,1,519,5,TRUE
+lm internal: first_innings_total ~ venue_prior_matches + bat_average + bat_strike_rate +      bat_depth + bowl_economy + bowl_dot_pct,2,519,6,TRUE
+lm internal: first_innings_total ~ venue_prior_matches + season_index + bat_average +      bat_strike_rate + bat_depth + bowl_economy + bowl_dot_pct,2,519,7,TRUE
+lm internal: first_innings_total ~ venue_prior_matches + venue_boundary_rate +      season_index + bat_average + bat_strike_rate + bat_depth +      bowl_economy + bowl_dot_pct,2,519,8,TRUE
+lm internal: first_innings_total ~ venue_sd_first_inn + bat_average + bat_strike_rate +      bat_boundary_pct + bat_depth + bowl_economy + bowl_dot_pct,2,340,7,TRUE
+lm internal: first_innings_total ~ venue_sd_first_inn + bat_average + bat_strike_rate +      bat_boundary_pct + bat_depth + bowl_economy + bowl_strike_rate +      bowl_dot_pct,2,340,8,TRUE
+lm internal: first_innings_total ~ venue_sd_first_inn + bat_average + bat_strike_rate +      bat_depth,2,340,4,TRUE
+lm internal: first_innings_total ~ venue_sd_first_inn + bat_average + bat_strike_rate +      bat_depth + bowl_dot_pct,2,340,5,TRUE
+lm internal: first_innings_total ~ venue_sd_first_inn + bat_average + bat_strike_rate +      bat_depth + bowl_economy + bowl_dot_pct,2,340,6,TRUE
+lm internal: first_innings_total ~ venue_sd_first_inn + bat_strike_rate,1,340,2,TRUE
+lm internal: first_innings_total ~ venue_sd_first_inn + bat_strike_rate +      bat_depth,1,340,3,TRUE
+lm internal: first_innings_total ~ venue_sd_first_inn + venue_boundary_rate +      bat_average + bat_strike_rate + bat_boundary_pct + bat_depth +      bowl_economy + bowl_strike_rate + bowl_dot_pct,2,340,9,TRUE
+lm internal: log_total ~ venue_avg_first_inn + venue_boundary_rate + season_index +      bat_strike_rate,3,518,4,TRUE
+lm internal: squared_residual ~ venue_cluster + season_index,1,1037,2,TRUE
+Log total BP auxiliary,1,1037,4,TRUE
+Log total GQ early segment,1,518,4,TRUE
+Log total GQ late segment,1,519,4,TRUE
+Log total White auxiliary,1,1037,2,TRUE
+Log-total model,1,1037,4,TRUE
+PCR,1,1037,9,TRUE
+Polynomial candidate,1,1037,7,TRUE
+Raw BP auxiliary,1,1037,4,TRUE
+Raw GQ early segment,1,518,4,TRUE
+Raw GQ late segment,1,519,4,TRUE
+Raw White auxiliary,1,1037,2,TRUE
+Raw with venue groups,1,1037,7,TRUE
+Robust regression,1,1037,4,TRUE
+Simple regression,1,1037,1,TRUE
+Variance candidate,1,1037,2,TRUE
+Weighted least squares,1,1037,4,TRUE
+WLS weighted residuals BP auxiliary,1,1037,4,TRUE
+WLS weighted residuals GQ early segment,1,518,4,TRUE
+WLS weighted residuals GQ late segment,1,519,4,TRUE
+WLS weighted residuals White auxiliary,1,1037,2,TRUE
+WLS weighted-residual White,1,1037,2,TRUE

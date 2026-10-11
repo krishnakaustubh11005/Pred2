@@ -1,0 +1,320 @@
+---
+title: "Predicting IPL first-innings totals before play"
+output:
+  html_document:
+    self_contained: true
+    toc: true
+    toc_float: true
+    number_sections: true
+    code_folding: hide
+    theme: readable
+    mathjax: null
+    css: report.css
+---
+
+```{r setup, include=FALSE}
+library(tidyverse)
+here::i_am("report/final_report.Rmd")
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+read_result <- function(name) readr::read_csv(here::here("results", paste0(name, ".csv")), show_col_types = FALSE)
+tab <- function(name, digits = 3) knitr::kable(read_result(name), digits = digits)
+figures <- read_result("figure_manifest")
+show_figures <- function(ids) {
+  for (id in ids) {
+    f <- figures %>% filter(.data$id == !!id)
+    cat("\n\n![](../figures/", f$filename, "){width=100%}\n\n", sep = "")
+    cat("**How to read this:** ", f$how, "\n\n**What it means:** ", f$meaning, "\n\n", sep = "")
+  }
+}
+split <- read_result("split_summary")
+selection <- read_result("final_selection")
+tests <- read_result("test_metrics")
+winner <- tests %>% filter(model == selection$model)
+b0 <- tests %>% filter(model == "B0 training mean")
+b1 <- tests %>% filter(model == "B1 venue history")
+interval <- read_result("interval_summary")
+simple <- read_result("simple_coefficients")
+simple_summary <- read_result("simple_summary")
+dimension <- read_result("dimension_checks")
+combined <- dimension %>% filter(block == "Combined")
+clusters <- read_result("cluster_summary")
+fmt <- function(x, digits = 1) formatC(x, format = "f", digits = digits)
+```
+
+# Objective (Problem)
+
+Can we predict a team's first-innings total in the IPL after the toss and announced playing XIs, but before any delivery is bowled? A useful estimate would help analysts judge likely scoring conditions and help fans distinguish an unusually good innings from one that is typical for its context. The target is the actual total, including extras and shortened innings; it is not a hypothetical full-length score.
+
+The research questions are:
+
+- Does a pre-innings model improve on the historical training mean and earlier venue average?
+- Do player-strength features and season context add useful information beyond venue alone?
+- Can PCA, factor analysis and venue groups simplify the inputs while preserving predictive value?
+- How sensitive are conclusions to influential innings and unequal error variance?
+
+**Success:** beat both baselines on the untouched final season, with honest error and interval reporting. Winning a statistical comparison is not guaranteed. Win probability, live-innings forecasts, weather forecasting and causal player valuation are outside this study.
+
+# Data description (overview)
+
+The primary source is [Cricsheet's IPL Ashwin CSV archive](https://cricsheet.org/downloads/). Its [format documentation](https://cricsheet.org/format/csv_ashwin/) explains the delivery and match-info files. The companion [JSON format](https://cricsheet.org/format/json/) supplies substitution records for reconstructing initial XIs and final-stage markers for season completion; delivery targets remain based on CSV.
+
+One row represents one observed first innings. After burn-in and identity checks, the study contains `r sum(split$N)` innings spanning `r min(split$first_season)`–`r max(split$last_season)`. The outcome is the sum of bat runs and extras. Realised wickets, legal balls, shortened status and result method support cleaning or diagnostics and never enter the pre-innings predictor pool.
+
+## Variable dictionary
+
+```{r dictionary}
+tab("variable_dictionary")
+```
+
+“Known before innings” applies to the predictors above. The target and diagnostic outcome flags are unavailable at prediction time. Batting and bowling rates use IPL history rather than all-format international careers. A player's wicketless or dismissal-free history needs finite denominators; these conventions are documented in [D-006](../DECISIONS.md#d-006).
+
+## Cleaning and missing information
+
+```{r cleaning}
+tab("data_quality")
+tab("feature_quality")
+tab("missing_values")
+tab("season_completeness")
+```
+
+Names are reconciled with reference tables. Super overs are removed; no-result and D/L first innings with observable deliveries remain in the historical data. Matches without a verified original XI cannot enter the modelling sample. Missing historical player information uses earlier league rates, and a venue without earlier innings uses earlier league context. Predictor finiteness is checked before fitting.
+
+## Predictor ratio and evaluation timeline
+
+The limit counts each dummy, component, factor score and added term as a predictor. The entire proposed candidate pool must pass before selection starts.
+
+```{r ratio}
+tab("ratio_summary")
+tab("split_summary")
+tab("leakage_audit")
+```
+
+```{r timeline, results='asis'}
+show_figures(1)
+```
+
+## Exploratory overview
+
+Outcome plots use training data so exploratory work does not expose test outcomes.
+
+```{r eda, results='asis'}
+show_figures(2:4)
+```
+
+# Methods used
+
+## Introduction to R pipeline
+
+R imports delivery and metadata files into tables, fixes identities and aggregates deliveries into innings. Small functions separate historical feature construction, fitting, diagnostics and plotting. This matters because a repeatable pipeline makes a data correction propagate consistently into every output. Each feature uses strictly earlier dates, including when two matches share a date. The target formula is $Y=\sum_b(\text{bat runs}_b+\text{extras}_b)$; see [D-004](../DECISIONS.md#d-004)–[D-007](../DECISIONS.md#d-007).
+
+## Simple regression
+
+Simple regression fits a straight relationship between an earlier venue mean and the eventual score. It gives a clear starting interpretation before player features make the model more complex. Its slope measures the change in predicted runs for an extra run in historical venue average, rather than the effect of changing the ground itself. Residual diagnostics check linearity, spread and influential cases. We use $Y_i=\beta_0+\beta_1V_i+\epsilon_i$ and training-only ordinary least squares; see [D-009](../DECISIONS.md#d-009).
+
+## Multiple regression, VIF and model selection
+
+Multiple regression estimates conditional relationships among venue, season, batting and bowling history. VIF quantifies how much feature overlap inflates coefficient uncertainty. Full, AIC and BIC selection procedures are compared using rolling-origin assessment within the training seasons; training-significant interaction and polynomial terms become validation candidates. Selection supports prediction but makes subsequent significance tests exploratory. The formulas are $Y_i=\beta_0+\sum_j\beta_jX_{ij}+\epsilon_i$ and $\mathrm{VIF}_j=1/(1-R_j^2)$; see [D-009](../DECISIONS.md#d-009).
+
+## PCA
+
+PCA creates uncorrelated directions from standardised strength measurements. We use it to compress correlated batting and bowling features before regression. Components explain variation in inputs, so keeping substantial variance does not guarantee better prediction of scores. Training parallel analysis determines retained dimensions, separately for batting, bowling and combined blocks, and held-out data use the same scaling and rotation. The score formula is $Z=SW$, where $S$ contains standardised inputs and $W$ the training loading matrix; see [D-010](../DECISIONS.md#d-010).
+
+## Factor Analysis
+
+Factor analysis represents shared variation through latent factors while allowing feature-specific uniqueness. Here it asks whether a smaller set of strength patterns explains correlations among the historical measurements. KMO assesses shared correlation suitability; Bartlett's test checks whether the correlation matrix differs from identity, without proving the factor model is correct. Maximum likelihood uses oblimin rotation, with varimax as a comparison, and parallel analysis is limited by identifiability. The model is $X=\Lambda F+u$; training score weights are fixed for held-out data; see [D-010](../DECISIONS.md#d-010).
+
+## Cluster analysis
+
+Clustering groups venues with similar historical scoring profiles. Training venue means, spread, boundary rates and match counts are standardised before Ward.D2 and k-means clustering. Maximum silhouette selects the group count, while elbow and gap plots provide supporting evidence and adjusted Rand agreement compares algorithms. Unseen venues use earlier-date profiles and frozen centres, with a training overall-profile fallback when no history exists. K-means minimises $\sum_k\sum_{i\in C_k}\lVert x_i-\mu_k\rVert^2$; see [D-011](../DECISIONS.md#d-011).
+
+## Outlier detection
+
+Outlier diagnostics distinguish large prediction errors from unusual predictor combinations and cases that move coefficients. Studentized residuals, leverage, Cook's distance, DFFITS, DFBETAS and Mahalanobis distance provide different inspection signals. A valid extraordinary innings is still relevant to the actual-total target, so flags do not cause automatic deletion. We compare all-innings fitting, omission of shortened training innings and robust regression against the same validation outcomes. Cook's distance summarises coefficient influence as $D_i=\sum_j(\hat Y_j-\hat Y_{j(-i)})^2/((p+1)\hat\sigma^2)$; cutoffs come from the saved threshold table; see [D-012](../DECISIONS.md#d-012).
+
+## Heteroscedasticity
+
+Heteroscedasticity means error variance changes across prediction contexts. Residual plots and Breusch-Pagan, reduced-form White and Goldfeld-Quandt tests inspect this assumption. A log target, positive inverse-variance WLS weights and HC3 standard errors address different parts of the problem; HC3 changes inference without changing forecasts. Retransformed log predictions use training smearing, and WLS weights come from a training venue-group and season variance model. We examine $\mathrm{Var}(\epsilon_i\mid X_i)=\sigma_i^2$ and $w_i=1/\hat\sigma_i^2$; see [D-013](../DECISIONS.md#d-013).
+
+## Evaluation and uncertainty
+
+The latest completed season is untouched until the final choice is frozen; the preceding season supplies validation. B0 predicts the training mean, and B1 predicts earlier venue average. With errors $e_i=Y_i-\hat Y_i$, RMSE is $\sqrt{\sum e_i^2/N}$, MAE is $\sum|e_i|/N$, and predictive R-squared is $1-\sum e_i^2/\sum(Y_i-\bar Y)^2$; it can be negative. Model comparison uses the same held-out innings, with date-block bootstrap uncertainty for final RMSE. Prediction intervals use validation residual calibration; temporal drift and validation reuse mean formal conformal coverage is not guaranteed; see [D-014](../DECISIONS.md#d-014).
+
+# Results
+
+## Exploration
+
+The strongest absolute training-feature correlation is `r fmt(max(abs(read_result("correlations")$correlation[read_result("correlations")$feature1 != read_result("correlations")$feature2])), 2)`, so some measurements overlap substantially.
+
+```{r correlation, results='asis'}
+show_figures(5)
+```
+
+```{r exploration-table}
+tab("season_eda")
+```
+
+**How to read this:** the table distinguishes average scoring from the uncertainty of that average. **What it means:** season context may help, but changing averages do not establish a causal trend.
+
+## Simple regression
+
+An extra run in earlier venue average predicts `r fmt(simple$estimate[simple$term == "venue_avg_first_inn"], 2)` additional runs; the training R-squared is `r fmt(simple_summary$r.squared, 3)`.
+
+```{r simple-figures, results='asis'}
+show_figures(6:7)
+```
+
+```{r simple-tables}
+tab("simple_coefficients")
+tab("simple_summary")
+```
+
+**How to read this:** confidence intervals describe uncertainty about the fitted mean relationship. **What it means:** venue history leaves substantial room for individual-match surprises.
+
+## Multiple regression
+
+Rolling training assessment chooses `r read_result("rolling_cv_summary")$method[1]` among the raw model procedures; the full model's largest VIF is `r fmt(max(read_result("vif_raw")$vif))`.
+
+```{r multiple-figures, results='asis'}
+show_figures(8:9)
+```
+
+```{r multiple-tables}
+tab("rolling_cv_summary")
+tab("multiple_summary")
+tab("partial_f_tests")
+tab("coefficient_swing")
+```
+
+**How to read this:** compare rolling error first, then partial-test evidence and coefficient movement. **What it means:** a useful forecast can coexist with unstable individual coefficients.
+
+## PCA
+
+The combined block retains `r combined$retained_pcs` components explaining `r fmt(100*combined$pca_variance)`% of its training variation.
+
+```{r pca-figures, results='asis'}
+show_figures(10:12)
+```
+
+```{r pca-tables}
+tab("dimension_checks")
+read_result("dimension_names") %>% filter(kind == "PCA") %>% knitr::kable()
+tab("vif_dimensions")
+```
+
+**How to read this:** component names are interpretations based on their dominant loadings, whose signs can be reversed without changing the solution. **What it means:** PCs are compact input summaries; remaining context correlations can still inflate overall regression VIF.
+
+## Factor Analysis
+
+The combined factor analysis retains `r combined$retained_factors` factors, with KMO `r fmt(combined$KMO, 2)` and minimum uniqueness `r fmt(combined$min_uniqueness, 3)`.
+
+```{r fa-figures, results='asis'}
+show_figures(13:14)
+```
+
+```{r fa-tables}
+tab("factor_correlations")
+tab("communalities")
+```
+
+**How to read this:** small uniqueness can signal a feature almost entirely represented by factors and may reveal an unstable boundary solution. **What it means:** factor labels are hypotheses about shared strength, not proof of hidden cricket abilities.
+
+In this study, uniqueness estimates approach the estimator's lower bound, so the ML factor solution requires caution. The separate bowling block has KMO `r fmt(dimension$KMO[dimension$block == "Bowling"], 2)` and RMSEA `r fmt(dimension$fa_RMSEA[dimension$block == "Bowling"], 3)`, indicating weaker suitability and fit than a neat factor story would suggest. Bartlett p-values printed as zero reflect numerical underflow, not a mathematically exact zero probability.
+
+## PCA versus Factor Analysis
+
+Validation RMSE determines whether either latent representation preserves useful predictive information.
+
+```{r dimension-comparison, results='asis'}
+show_figures(15)
+```
+
+```{r dimension-comparison-table}
+tibble(method = c("PCA", "Factor Analysis"), purpose = c("Summarise total input variation", "Model shared input variation"),
+ assumption = c("Linear axes; no latent noise model required", "Latent factors plus uniqueness; ML distribution assumptions"),
+ result_here = c(paste(combined$retained_pcs, "combined PCs"), paste(combined$retained_factors, "combined factors"))) %>% knitr::kable()
+read_result("validation_metrics") %>% filter(model %in% c("Multiple selected", "PCR", "FA")) %>% knitr::kable(digits = 3)
+```
+
+**How to read this:** lower RMSE predicts the same validation target more accurately. **What it means:** input compression and forecasting success must be evaluated separately.
+
+## Cluster analysis
+
+Silhouette selects `r clusters$k` venue groups; adjusted Rand agreement with hierarchical clustering is `r fmt(clusters$adjusted_rand_index, 2)`.
+
+```{r cluster-figures, results='asis'}
+show_figures(16:18)
+```
+
+```{r cluster-table}
+tab("cluster_summary")
+```
+
+**How to read this:** agreement measures similarity between partitions and does not measure prediction quality. **What it means:** venue groups offer a compact categorical representation, subject to sample-size and historical-condition limitations.
+
+The gap criterion recommends `r clusters$gap_recommended` group(s), compared with the silhouette choice of `r clusters$k`. This disagreement limits the evidence for distinct venue types; groups remain an exploratory predictor representation rather than an established taxonomy.
+
+## Outlier detection
+
+`r sum(read_result("influence_diagnostics")$flagged)` training innings trigger at least one inspection rule; these cases remain identifiable in the saved table.
+
+```{r influence-figures, results='asis'}
+show_figures(19:21)
+```
+
+```{r influence-tables}
+tab("influence_thresholds")
+read_result("flagged_innings") %>% arrange(desc(cooks)) %>% select(match_id, venue, season, first_innings_total, curtailed, explanation) %>% head(8) %>% knitr::kable()
+read_result("validation_metrics") %>% filter(model %in% c("Exclude curtailed", "Robust")) %>% knitr::kable(digits = 3)
+```
+
+**How to read this:** explanations describe plausible mechanisms and do not claim independently verified match narratives. **What it means:** shortened innings and genuine extremes require sensitivity analysis rather than silent removal.
+
+## Heteroscedasticity
+
+The median HC3-to-classical standard-error ratio is `r fmt(median(read_result("standard_errors")$HC3/read_result("standard_errors")$classical), 2)`; the tests below show which variance concerns remain.
+
+```{r hetero-figures, results='asis'}
+show_figures(22:25)
+```
+
+```{r hetero-tables}
+tab("heteroscedasticity_tests")
+tab("venue_variance")
+read_result("validation_metrics") %>% filter(model %in% c("Log total", "WLS")) %>% knitr::kable(digits = 3)
+```
+
+**How to read this:** a larger p-value after treatment is limited evidence, not proof that variance is constant. WLS weighted-residual checks matter more than original-scale residuals for its variance assumption. **What it means:** prediction intervals would widen at high-scoring grounds if their fitted error variance is higher; this project reports evidence rather than presuming that pattern.
+
+The variance model estimates training residual SD at `r fmt(read_result("venue_variance")$predicted_sd[read_result("venue_variance")$venue_cluster == "Lower scoring"])` runs in the lower-scoring group and `r fmt(read_result("venue_variance")$predicted_sd[read_result("venue_variance")$venue_cluster == "Higher scoring"])` runs in the higher-scoring group. Intervals scaled by this model widen where the expected error spread is larger, though the two groups have very different sample sizes.
+
+## Final comparison and untouched test season
+
+Validation selects **`r selection$model`**, whose test RMSE is **`r fmt(winner$rmse)` runs**, MAE is **`r fmt(winner$mae)` runs**, and predictive R-squared is **`r fmt(winner$r2, 3)`**.
+
+```{r final-figures, results='asis'}
+show_figures(26:28)
+```
+
+```{r final-tables}
+tab("test_metrics")
+tab("interval_summary")
+```
+
+**How to read this:** the selected model is determined by validation, even if another frozen candidate has lower test error. Interval coverage counts how often the actual score lies within the forecast bounds. **What it means:** coverage is `r fmt(100*interval$empirical_coverage)`%, and future temporal shifts may change both accuracy and coverage.
+
+# Conclusion
+
+The answers to the research questions follow directly from the held-out results:
+
+- **Baseline improvement:** the selected model `r if(winner$rmse < min(b0$rmse,b1$rmse)) "beats both baselines" else "does not beat both baselines"`. B0 RMSE is `r fmt(b0$rmse)` and B1 RMSE is `r fmt(b1$rmse)` runs, compared with `r fmt(winner$rmse)` for the selected model.
+- **Additional features:** full comparisons show whether player and time information transfer to the later season; their coefficients describe associations and are affected by collinearity and selection.
+- **Simplification:** PCA retains `r combined$retained_pcs` axes, FA retains `r combined$retained_factors` factors, and clustering produces `r clusters$k` venue groups. Their accuracy is reported rather than assumed superior.
+- **Sensitivity:** influence checks flag `r sum(read_result("influence_diagnostics")$flagged)` innings. Robust, shortened-innings, log and weighted alternatives expose how much conclusions depend on unusual scores and variance assumptions.
+
+The key findings are the final test error, its comparison with both simple baselines, the limited distinction between overlapping strength features, and the observed interval coverage. The study supports a pre-innings expectation with substantial uncertainty, rather than a precise promised total.
+
+Despite beating the historical baselines, predictive R-squared of `r fmt(winner$r2,3)` indicates very little improvement over a constant equal to the test season's mean. That mean is unavailable in advance and is not a usable baseline, but it helps interpret the result: much of the gain may come from adapting the scoring level rather than distinguishing individual innings well.
+
+Limitations include shortened matches, finite-denominator career rates, sparse player and venue histories, excluded unverifiable XIs, combined stadium aliases, selection uncertainty and scoring changes across seasons. Announced XIs need to be available in real use; an initial-XI model cannot foresee impact-player choices. Validation supports both selection and interval calibration, so coverage is empirical rather than guaranteed. Future work could add verified pre-match weather, rule-era context, specialist-role weighting and an additional held-out calibration season.
+
+The frozen model predicts actual IPL first-innings totals with test RMSE of `r fmt(winner$rmse)` runs. Its practical value is bounded by the baseline comparison and observed interval coverage. The reproducible pipeline shows how to evaluate that value honestly using information available before play.

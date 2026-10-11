@@ -1,0 +1,4 @@
+split,N,first_season,last_season
+test,74,2026,2026
+train,1037,2009,2024
+validation,74,2025,2025

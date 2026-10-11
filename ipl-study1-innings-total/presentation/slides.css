@@ -1,0 +1,10 @@
+slides > slide { font-family: Arial, sans-serif; background: #fff; color: #202c38; }
+slides > slide h2 { font-size: 32px; color: #164f75; line-height: 1.15; }
+slides > slide p, slides > slide li { font-size: 24px; line-height: 1.35; }
+slides > slide img { max-height: 405px; object-fit: contain; }
+slides > slide .slide-content { overflow: hidden; }
+slides > slide strong { color: #164f75; }
+/* Use ordinary painted layers so embedded figures also work in software rendering. */
+slides { perspective: none !important; -webkit-perspective: none !important; }
+slides > slide { display: none !important; transform: none !important; -webkit-transform: none !important; transition: none !important; opacity: 1 !important; }
+slides > slide.current { display: block !important; }

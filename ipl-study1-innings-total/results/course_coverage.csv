@@ -1,0 +1,9 @@
+topic,script,figures,report_section
+Introduction to R,02_clean.R / 03_features.R,f01–f05,Data and Methods
+Simple Regression,05_regression.R,f06–f07,Methods and Results
+Multiple Regression,05_regression.R,f08–f09,Methods and Results
+PCA,06_pca_fa.R,"f10–f12, f15",Methods and Results
+Factor Analysis,06_pca_fa.R,f13–f15,Methods and Results
+Cluster Analysis,07_clustering.R,f16–f18,Methods and Results
+Outlier Detection,08_outliers_hetero.R,f19–f21,Methods and Results
+Heteroscedasticity,08_outliers_hetero.R,f22–f25,Methods and Results

@@ -1,0 +1,14 @@
+kind,axis,strongest_feature,interpretation,block
+PCA,PC1,bat_strike_rate,Batting pace and depth,Batting
+FA,ML1,bat_boundary_pct,Batting pace and depth,Batting
+FA,ML2,team_last10_total,Batting pace and depth,Batting
+PCA,PC1,bowl_dot_pct,Bowling control and late-over pressure,Bowling
+PCA,PC2,bowl_strike_rate,Wicket-taking efficiency and mixed strength,Bowling
+FA,ML1,bowl_economy,Bowling economy and run control,Bowling
+FA,ML2,bowl_wickets_match,Bowling wicket threat,Bowling
+PCA,PC1,bat_strike_rate,Batting pace and depth,Combined
+PCA,PC2,bowl_wickets_match,Bowling wicket threat,Combined
+PCA,PC3,bowl_strike_rate,Wicket-taking efficiency and mixed strength,Combined
+FA,ML1,bat_strike_rate,Batting pace and depth,Combined
+FA,ML2,bowl_economy,Bowling economy and run control,Combined
+FA,ML3,bowl_wickets_match,Bowling wicket threat,Combined

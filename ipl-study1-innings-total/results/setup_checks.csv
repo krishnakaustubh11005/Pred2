@@ -1,0 +1,3 @@
+check,pass
+R dependencies,TRUE
+Pandoc HTML rendering,TRUE

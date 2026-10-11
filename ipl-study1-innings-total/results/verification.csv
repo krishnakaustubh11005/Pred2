@@ -1,0 +1,16 @@
+check,pass
+all predictor ratios pass,TRUE
+strict-date leakage reconstruction passes,TRUE
+exact report sections and order,TRUE
+required slide count,TRUE
+all prescribed figures present,TRUE
+"all figures have messages, captions and sections",TRUE
+all figures referenced in report,TRUE
+all course topics covered,TRUE
+report embeds images,TRUE
+code folding available,TRUE
+all split features finite,TRUE
+test selection matches validation rule,TRUE
+all final prediction rows finite,TRUE
+interval bounds ordered,TRUE
+reported numeric values have saved-results provenance,TRUE

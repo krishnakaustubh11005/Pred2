@@ -1,0 +1,11 @@
+item,value
+burn-in innings,58
+unverified XI after burn-in,0
+incomplete-season innings,0
+nonpositive totals,0
+modelled innings,1185
+numeric predictors,17
+seed,42
+shrinkage balls,20
+depth strike-rate threshold,125
+leakage audit rows,20

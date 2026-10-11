@@ -1,0 +1,7 @@
+data/raw/
+.runtime/
+.Rhistory
+.RData
+*.log
+report/*_files/
+presentation/*_files/
