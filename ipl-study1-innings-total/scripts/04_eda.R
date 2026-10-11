@@ -1,6 +1,17 @@
 set.seed(42)
+source(here::here("R", "course.R"))
+record_course_sources()
 d <- readRDS(here::here("data", "processed", "features.rds"))
-tr <- d %>% filter(split == "train")
+tr <- subset(d, split == "train")
+# Intro-to-R pattern: inspect rows, dimensions and descriptive measures first.
+print(head(tr[, c("season", "venue", "first_innings_total")]))
+print(summary(tr$first_innings_total))
+save_csv(data.frame(N = nrow(tr), mean = mean(tr$first_innings_total),
+ median = median(tr$first_innings_total), sd = sd(tr$first_innings_total),
+ minimum = min(tr$first_innings_total), maximum = max(tr$first_innings_total)), "score_summary")
+training_covariance <- cov(tr[, feature_names()])
+save_csv(as.data.frame(as.table(training_covariance)) %>%
+ setNames(c("feature1", "feature2", "covariance")), "covariances")
 timeline <- d %>% count(season, split)
 p <- ggplot(timeline, aes(season, n, fill = split)) + geom_col() +
  scale_fill_manual(values = palette[c("train", "validation", "test")]) +

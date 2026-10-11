@@ -21,34 +21,31 @@ other attached packages:
 [9] tidyverse_1.3.1
 
 loaded via a namespace (and not attached):
- [1] nlme_3.1-155          fs_1.5.2              lubridate_1.8.0      
- [4] bit64_4.0.5           httr_1.4.2            rprojroot_2.0.2      
- [7] tools_4.1.2           backports_1.4.1       utf8_1.2.2           
-[10] R6_2.5.1              mgcv_1.8-39           nortest_1.0-4        
-[13] DBI_1.1.2             colorspace_2.0-2      withr_2.4.3          
-[16] tidyselect_1.1.2      gridExtra_2.3         mnormt_2.0.2         
-[19] bit_4.0.4             compiler_4.1.2        cli_3.2.0            
-[22] rvest_1.0.2           factoextra_1.0.7      xml2_1.3.3           
-[25] sandwich_3.0-1        labeling_0.4.2        scales_1.1.1         
-[28] lmtest_0.9-39         psych_2.1.9           goftest_1.2-3        
-[31] digest_0.6.29         rmarkdown_2.6         pkgconfig_2.0.3      
-[34] htmltools_0.5.2       dbplyr_2.1.1          fastmap_1.1.0        
-[37] highr_0.9             rlang_1.0.1           readxl_1.3.1         
-[40] rstudioapi_0.13       generics_0.1.2        farver_2.1.0         
-[43] zoo_1.8-9             jsonlite_1.7.3        vroom_1.5.7          
-[46] car_3.0-12            magrittr_2.0.2        Matrix_1.4-0         
-[49] patchwork_1.1.1       Rcpp_1.0.8            munsell_0.5.0        
-[52] fansi_1.0.2           abind_1.4-5           viridis_0.6.2        
-[55] lifecycle_1.0.1       stringi_1.7.6         yaml_2.3.5           
-[58] snakecase_0.11.0      carData_3.0-5         MASS_7.3-55          
-[61] grid_4.1.2            nFactors_2.4.1        parallel_4.1.2       
-[64] ggrepel_0.9.1         crayon_1.5.0          lattice_0.20-45      
-[67] splines_4.1.2         haven_2.4.3           hms_1.1.1            
-[70] tmvnsim_1.0-2         knitr_1.37            pillar_1.7.0         
-[73] reprex_2.0.1          GPArotation_2014.11-1 glue_1.6.1           
-[76] evaluate_0.15         data.table_1.14.2     modelr_0.1.8         
-[79] olsrr_0.5.3           vctrs_0.3.8           tzdb_0.2.0           
-[82] cellranger_1.1.0      gtable_0.3.0          assertthat_0.2.1     
-[85] xfun_0.29             mime_0.12             janitor_2.2.0        
-[88] broom_0.7.12          viridisLite_0.4.0     cluster_2.1.2        
-[91] corrplot_0.92         ellipsis_0.3.2        here_1.0.1           
+ [1] viridis_0.6.2         httr_1.4.2            bit64_4.0.5          
+ [4] vroom_1.5.7           jsonlite_1.7.3        viridisLite_0.4.0    
+ [7] carData_3.0-5         tmvnsim_1.0-2         here_1.0.1           
+[10] modelr_0.1.8          assertthat_0.2.1      cellranger_1.1.0     
+[13] yaml_2.3.5            ggrepel_0.9.1         pillar_1.7.0         
+[16] backports_1.4.1       lattice_0.20-45       glue_1.6.1           
+[19] digest_0.6.29         rvest_1.0.2           snakecase_0.11.0     
+[22] GPArotation_2014.11-1 colorspace_2.0-2      htmltools_0.5.2      
+[25] psych_2.1.9           pkgconfig_2.0.3       broom_0.7.12         
+[28] olsrr_0.5.3           haven_2.4.3           patchwork_1.1.1      
+[31] scales_1.1.1          tzdb_0.2.0            generics_0.1.2       
+[34] car_3.0-12            ellipsis_0.3.2        withr_2.4.3          
+[37] janitor_2.2.0         cli_3.2.0             mnormt_2.0.2         
+[40] magrittr_2.0.2        crayon_1.5.0          readxl_1.3.1         
+[43] evaluate_0.15         fs_1.5.2              fansi_1.0.2          
+[46] nlme_3.1-155          MASS_7.3-55           xml2_1.3.3           
+[49] tools_4.1.2           data.table_1.14.2     hms_1.1.1            
+[52] lifecycle_1.0.1       munsell_0.5.0         reprex_2.0.1         
+[55] cluster_2.1.2         compiler_4.1.2        rlang_1.0.1          
+[58] grid_4.1.2            rstudioapi_0.13       goftest_1.2-3        
+[61] rmarkdown_2.6         gtable_0.3.0          abind_1.4-5          
+[64] DBI_1.1.2             R6_2.5.1              gridExtra_2.3        
+[67] zoo_1.8-9             lubridate_1.8.0       knitr_1.37           
+[70] bit_4.0.4             fastmap_1.1.0         utf8_1.2.2           
+[73] nortest_1.0-4         rprojroot_2.0.2       stringi_1.7.6        
+[76] parallel_4.1.2        Rcpp_1.0.8            vctrs_0.3.8          
+[79] dbplyr_2.1.1          tidyselect_1.1.2      xfun_0.29            
+[82] lmtest_0.9-39        

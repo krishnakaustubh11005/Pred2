@@ -6,8 +6,8 @@ for (d in dirs) dir.create(d, recursive = TRUE, showWarnings = FALSE)
 local_lib <- file.path(getwd(), ".runtime", "usr", "lib", "R", "site-library")
 if (dir.exists(local_lib)) .libPaths(c(local_lib, .libPaths()))
 required <- c("tidyverse", "here", "lubridate", "janitor", "glue", "ggrepel", "patchwork",
- "scales", "viridis", "psych", "GPArotation", "nFactors", "factoextra", "cluster", "car",
- "lmtest", "sandwich", "MASS", "broom", "olsrr", "corrplot", "knitr", "rmarkdown")
+ "scales", "viridis", "psych", "GPArotation", "cluster", "lmtest", "MASS", "broom",
+ "olsrr", "knitr", "rmarkdown", "jsonlite", "xml2")
 missing <- required[!vapply(required, requireNamespace, logical(1), quietly = TRUE)]
 if (length(missing)) {
   dir.create(local_lib, recursive = TRUE, showWarnings = FALSE)

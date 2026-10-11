@@ -1,10 +1,16 @@
 set.seed(42)
 source(here::here("R", "modelling.R")); enable_lm_audit()
-tr <- d %>% filter(split == "train"); va <- d %>% filter(split == "validation")
+tr <- subset(d, split == "train")
+va <- subset(d, split == "validation")
+print(head(tr))
+print(dim(tr))
 models <- list()
 register_model("B0 training mean", NULL, tr, va, rep(mean(tr$first_innings_total), nrow(va)), "baseline")
 register_model("B1 venue history", NULL, tr, va, va$venue_avg_first_inn, "baseline")
-simple <- checked_lm(first_innings_total ~ venue_avg_first_inn, tr, "Simple regression")
+check_ratio(nrow(tr), 1, "Simple regression")
+simple <- lm(first_innings_total ~ venue_avg_first_inn, data = tr)
+print(summary(simple))
+print(confint(simple))
 register_model("Simple", simple, tr, va)
 save_csv(broom::tidy(simple, conf.int = TRUE), "simple_coefficients"); save_csv(broom::glance(simple), "simple_summary")
 grid <- tibble(venue_avg_first_inn = seq(min(tr$venue_avg_first_inn), max(tr$venue_avg_first_inn), length.out = 100))
@@ -18,38 +24,59 @@ save_plot(p, 6, "simple_fit", glue::glue("A higher venue mean predicts {round(co
  "Training simple regression with a confidence band for the mean", "Results: simple regression", "The line predicts the mean; individual scores scatter around it.", "Venue history is an imperfect anchor rather than a precise score forecast.")
 save_plot(diagnostic_panels(simple), 7, "simple_diagnostics", glue::glue("Simple regression leaves residual SD of {round(summary(simple)$sigma, 1)} runs"),
  "Residual shape, normality, spread and leverage", "Results: simple regression", "Each panel's subtitle describes the desirable pattern.", "Diagnostics test whether the model's assumptions are plausible.", TRUE)
-cv <- rolling_raw(tr); save_csv(cv, "rolling_cv")
-cv_summary <- cv %>% group_by(method) %>% summarise(rmse = sqrt(weighted.mean(rmse^2, N_assess)), .groups = "drop") %>% arrange(rmse)
-save_csv(cv_summary, "rolling_cv_summary")
-raw_fits <- setNames(lapply(c("Full", "AIC", "BIC"), function(method) choose_raw(tr, method)), c("Full", "AIC", "BIC"))
-for (name in names(raw_fits)) register_model(paste("Multiple", name), raw_fits[[name]], tr, va)
-raw <- raw_fits[[cv_summary$method[1]]]
-interaction <- update(formula(raw), . ~ . + venue_avg_first_inn:season_index)
-polynomial <- update(formula(raw), . ~ . + I(season_index^2))
-fi <- checked_lm(interaction, tr, "Interaction candidate"); fp <- checked_lm(polynomial, tr, "Polynomial candidate")
-partial <- tibble(term = c("venue × season", "season squared"), p_value = c(anova(raw, fi)$`Pr(>F)`[2], anova(raw, fp)$`Pr(>F)`[2]))
+# Store24 pattern: inspect the full model, then select backward using AIC.
+full_formula <- first_innings_total ~ venue_avg_first_inn + venue_sd_first_inn +
+  venue_prior_matches + venue_boundary_rate + season_index + toss_winner_batting_first +
+  bat_average + bat_strike_rate + bat_boundary_pct + bat_top_order_sr + bat_depth +
+  team_last10_total + bowl_economy + bowl_strike_rate + bowl_dot_pct +
+  bowl_wickets_match + bowl_death_economy
+check_ratio(nrow(tr), length(feature_names()), "Full multiple regression")
+full <- lm(full_formula, data = tr)
+print(summary(full))
+raw <- step(full, direction = "backward", trace = 0)
+print(summary(raw))
+# Both functions are demonstrated in class; do not register duplicate candidates.
+step_comparison <- MASS::stepAIC(full, direction = "backward", trace = FALSE)
+stopifnot(identical(names(coef(raw)), names(coef(step_comparison))))
+register_model("Multiple full", full, tr, va)
+register_model("Multiple AIC", raw, tr, va)
+save_csv(as.data.frame(raw$anova), "aic_selection_path")
+
+# Boston pattern: nested comparisons with main effects retained in the full fit.
+interaction <- update(full_formula, . ~ . + venue_avg_first_inn:season_index)
+polynomial <- update(full_formula, . ~ . + I(season_index^2))
+check_ratio(nrow(tr), length(feature_names()) + 1, "Interaction candidate")
+fi <- lm(interaction, data = tr)
+check_ratio(nrow(tr), length(feature_names()) + 1, "Polynomial candidate")
+fp <- lm(polynomial, data = tr)
+print(anova(full, fi))
+print(anova(full, fp))
+partial <- tibble(term = c("venue × season", "season squared"),
+ p_value = c(anova(full, fi)$`Pr(>F)`[2], anova(full, fp)$`Pr(>F)`[2]))
 save_csv(partial, "partial_f_tests")
 # Only training evidence decides whether these extensions enter the candidate set.
 if (partial$p_value[1] < .05) register_model("Multiple interaction", fi, tr, va)
 if (partial$p_value[2] < .05) register_model("Multiple polynomial", fp, tr, va)
-register_model("Multiple selected", raw, tr, va)
 save_csv(broom::tidy(raw, conf.int = TRUE), "multiple_coefficients"); save_csv(broom::glance(raw), "multiple_summary")
-vif <- vif_table(raw_fits$Full); save_csv(vif, "vif_raw")
-p <- ggplot(vif, aes(vif, reorder(term, vif))) + geom_col(fill = palette["batting"]) +
- geom_vline(xintercept = c(5, 10), linetype = "dashed", colour = palette["bowling"]) +
- labs(x = "Variance inflation factor", y = "Predictor") + theme(axis.text.y = element_text(size = 9))
-save_plot(p, 8, "vif", glue::glue("The full model's largest VIF is {round(max(vif$vif), 1)}"),
- "Full raw model; dashed thresholds mark moderate and severe inflation", "Results: multiple regression", "Longer bars indicate more overlap with other predictors.", "Collinearity makes individual effects harder to interpret.")
+strength_correlation <- cor(tr$bat_strike_rate, tr$bat_boundary_pct)
+save_csv(tibble(feature1 = "bat_strike_rate", feature2 = "bat_boundary_pct", correlation = strength_correlation), "correlated_strength")
+p <- ggplot(tr, aes(bat_strike_rate, bat_boundary_pct)) + geom_point(alpha = .3, colour = palette["batting"]) +
+ labs(x = "XI historical strike rate (runs per 100 balls)", y = "XI historical boundary deliveries (%)")
+save_plot(p, 8, "related_strength", glue::glue("Batting pace and boundaries correlate at {round(strength_correlation, 2)}"),
+ "Two training features carry overlapping information", "Results: multiple regression", "An upward point cloud shows measurements moving together.", "Related inputs can redistribute coefficient estimates when fitted together.")
 effects <- broom::tidy(raw, conf.int = TRUE) %>% filter(term != "(Intercept)") %>%
  mutate(training_sd = vapply(term, function(v) sd(tr[[v]]), numeric(1)),
         estimate = estimate * training_sd, conf.low = conf.low * training_sd, conf.high = conf.high * training_sd)
 save_csv(effects,"standardised_coefficients")
 save_plot(coef_plot(effects) + labs(x = "Score change per training SD (runs)"), 9, "coefficients", glue::glue("{length(coef(raw))-1} predictors remain in the selected raw model"),
  "Effects and confidence intervals scaled to one training standard deviation", "Results: multiple regression", "Intervals crossing zero indicate uncertain conditional effects; the common scale permits comparison.", "Each effect holds other included predictors fixed and is not causal; original units remain in the coefficient table.")
-swing <- bind_rows(broom::tidy(simple) %>% mutate(model = "Simple"), broom::tidy(raw_fits$Full) %>% mutate(model = "Full")) %>% filter(term == "venue_avg_first_inn")
+swing <- bind_rows(broom::tidy(simple) %>% mutate(model = "Simple"), broom::tidy(full) %>% mutate(model = "Full")) %>% filter(term == "venue_avg_first_inn")
 save_csv(swing, "coefficient_swing")
-decision("D-009", 4, "Many features compete and overlap.", "Select by training fit; select AIC/BIC/full procedures by rolling-origin error.",
- paste("Use", cv_summary$method[1], "as the raw selection procedure; compare training-significant interaction and polynomial candidates on validation."),
- "Chronological cross-validation evaluates each selection procedure on later training seasons.", "Stepwise selection makes ordinary coefficient intervals exploratory; significance is not proof of causal influence.")
-phase_result(4, "Regression", c("rolling_cv_summary", "simple_summary", "validation_metrics", "partial_f_tests"),
- "Figures f06–f09 show the simple fit, assumptions, collinearity and coefficients. Model comparisons use validation outcomes only.", "Prediction quality and coefficient interpretability are different goals.", "Can dimension reduction simplify overlapping player measurements?")
+decision("D-019", 4, "The supplied classroom pattern must govern modelling.",
+ "Retain the previous procedures; adapt the Store24 and Boston examples.",
+ "Use visible lm fits, backward AIC step and stepAIC verification, nested interaction and polynomial tests, correlation and coefficient comparisons. Supersedes D-009.",
+ "The analysis can be followed alongside the actual course scripts.",
+ "Stepwise coefficient intervals are exploratory. Added terms retain their main effects.")
+phase_result(4, "Course-aligned regression", c("simple_summary", "validation_metrics", "partial_f_tests", "coefficient_swing"),
+ "Figures f06–f09 show the simple fit, diagnostics, overlapping strength inputs and selected coefficients. All comparisons use validation outcomes.",
+ "An association can change when other predictors enter the model.", "Can a smaller set of input scores preserve prediction accuracy?")

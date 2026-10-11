@@ -176,17 +176,7 @@ What I learned: Good plots explain both a pattern and its uncertainty.
 
 Open questions: Does adding correlated strength measurements improve future predictions?
 
-## Phase 4: Regression
-
-rolling_cv_summary:
-
-
-
-|method |   rmse|
-|:------|------:|
-|AIC    | 31.304|
-|Full   | 31.362|
-|BIC    | 31.918|
+## Phase 4: Course-aligned regression
 
 simple_summary:
 
@@ -200,15 +190,13 @@ validation_metrics:
 
 
 
-|model             |  p| adj_r2|   rmse|    mae|     r2|
-|:-----------------|--:|------:|------:|------:|------:|
-|B0 training mean  |  0|     NA| 44.264| 36.366| -0.371|
-|B1 venue history  |  0|     NA| 43.034| 35.255| -0.296|
-|Simple            |  1|  0.007| 43.077| 35.332| -0.299|
-|Multiple Full     | 17|  0.103| 38.786| 30.897| -0.053|
-|Multiple AIC      |  6|  0.105| 39.109| 30.915| -0.071|
-|Multiple BIC      |  4|  0.100| 38.728| 30.804| -0.050|
-|Multiple selected |  6|  0.105| 39.109| 30.915| -0.071|
+|model            |  p| adj_r2|   rmse|    mae|     r2|
+|:----------------|--:|------:|------:|------:|------:|
+|B0 training mean |  0|     NA| 44.264| 36.366| -0.371|
+|B1 venue history |  0|     NA| 43.034| 35.255| -0.296|
+|Simple           |  1|  0.007| 43.077| 35.332| -0.299|
+|Multiple full    | 17|  0.103| 38.786| 30.897| -0.053|
+|Multiple AIC     |  6|  0.105| 39.109| 30.915| -0.071|
 
 partial_f_tests:
 
@@ -216,26 +204,35 @@ partial_f_tests:
 
 |term           | p_value|
 |:--------------|-------:|
-|venue × season |   0.340|
-|season squared |   0.138|
+|venue × season |   0.412|
+|season squared |   0.094|
 
-Figures f06–f09 show the simple fit, assumptions, collinearity and coefficients. Model comparisons use validation outcomes only.
+coefficient_swing:
 
-What I learned: Prediction quality and coefficient interpretability are different goals.
 
-Open questions: Can dimension reduction simplify overlapping player measurements?
 
-## Phase 5: PCA and Factor Analysis
+|term                | estimate| std.error| statistic| p.value|model  |
+|:-------------------|--------:|---------:|---------:|-------:|:------|
+|venue_avg_first_inn |    0.314|     0.108|     2.915|   0.004|Simple |
+|venue_avg_first_inn |   -0.539|     0.204|    -2.642|   0.008|Full   |
+
+Figures f06–f09 show the simple fit, diagnostics, overlapping strength inputs and selected coefficients. All comparisons use validation outcomes.
+
+What I learned: An association can change when other predictors enter the model.
+
+Open questions: Can a smaller set of input scores preserve prediction accuracy?
+
+## Phase 5: Course-aligned PCA and Factor Analysis
 
 dimension_checks:
 
 
 
-|block    | variables| retained_pcs| retained_factors| pca_variance|   KMO| Bartlett_statistic| Bartlett_df| Bartlett_p| fa_df| fa_RMSEA| min_uniqueness|
-|:--------|---------:|------------:|----------------:|------------:|-----:|------------------:|-----------:|----------:|-----:|--------:|--------------:|
-|Batting  |         6|            1|                2|        0.603| 0.791|           3994.111|          15|          0|     4|    0.075|          0.005|
-|Bowling  |         5|            2|                2|        0.741| 0.571|           1719.828|          10|          0|     1|    0.245|          0.005|
-|Combined |        11|            3|                3|        0.681| 0.760|           6086.668|          55|          0|    25|    0.092|          0.005|
+|block    | variables| retained_pcs| retained_factors| parallel_factors| pca_variance|fa_method      |fa_rotation | min_uniqueness| max_communality|boundary_warning | pca_score_error| fa_score_error| pca_off_diagonal| prcomp_score_error|
+|:--------|---------:|------------:|----------------:|----------------:|------------:|:--------------|:-----------|--------------:|---------------:|:----------------|---------------:|--------------:|----------------:|------------------:|
+|Batting  |         6|            1|                2|                2|        0.603|principal axis |varimax     |         -0.041|           1.041|TRUE             |               0|              0|                0|                  0|
+|Bowling  |         5|            2|                2|                3|        0.741|principal axis |varimax     |         -0.341|           1.341|TRUE             |               0|              0|                0|                  0|
+|Combined |        11|            3|                3|                3|        0.681|principal axis |varimax     |          0.010|           0.990|FALSE            |               0|              0|                0|                  0|
 
 dimension_names:
 
@@ -244,23 +241,23 @@ dimension_names:
 |kind |axis |strongest_feature  |interpretation                              |block    |
 |:----|:----|:------------------|:-------------------------------------------|:--------|
 |PCA  |PC1  |bat_strike_rate    |Batting pace and depth                      |Batting  |
-|FA   |ML1  |bat_boundary_pct   |Batting pace and depth                      |Batting  |
-|FA   |ML2  |team_last10_total  |Batting pace and depth                      |Batting  |
+|FA   |PA1  |bat_strike_rate    |Batting pace and depth                      |Batting  |
+|FA   |PA2  |team_last10_total  |Batting pace and depth                      |Batting  |
 |PCA  |PC1  |bowl_dot_pct       |Bowling control and late-over pressure      |Bowling  |
 |PCA  |PC2  |bowl_strike_rate   |Wicket-taking efficiency and mixed strength |Bowling  |
-|FA   |ML1  |bowl_economy       |Bowling economy and run control             |Bowling  |
-|FA   |ML2  |bowl_wickets_match |Bowling wicket threat                       |Bowling  |
+|FA   |PA1  |bowl_economy       |Bowling economy and run control             |Bowling  |
+|FA   |PA2  |bowl_wickets_match |Bowling wicket threat                       |Bowling  |
 |PCA  |PC1  |bat_strike_rate    |Batting pace and depth                      |Combined |
 |PCA  |PC2  |bowl_wickets_match |Bowling wicket threat                       |Combined |
 |PCA  |PC3  |bowl_strike_rate   |Wicket-taking efficiency and mixed strength |Combined |
-|FA   |ML1  |bat_strike_rate    |Batting pace and depth                      |Combined |
-|FA   |ML2  |bowl_economy       |Bowling economy and run control             |Combined |
+|FA   |PA1  |bat_strike_rate    |Batting pace and depth                      |Combined |
+|FA   |PA2  |bowl_economy       |Bowling economy and run control             |Combined |
 
-Figures f10–f15 describe component retention, loadings, score geometry, factor variance and model comparison. Latent summaries and original coefficients answer different questions.
+Figures f10–f15 show training parallel analysis, loadings, scores, communalities and validation comparisons. Scores are reconstructed from saved weights.
 
-What I learned: PCA explains total variation; FA models shared variation and leaves uniqueness.
+What I learned: PCA summarises total variation; FA models shared variation plus uniqueness.
 
-Open questions: Do venue groups offer useful context beyond continuous venue history?
+Open questions: Does compressing inputs retain useful predictive information?
 
 ## Phase 6: Venue clustering
 

@@ -167,3 +167,33 @@ Decision: Provide variable-specific construction rules, per-column missing count
 Rationale: The student should be able to explain exactly what each measurement and diagnostic means.  
 Consequences or risks: Role inference and finite denominators are imperfect proxies; reporting their definitions does not change frozen model forecasts.  
 Status: active
+
+## D-019
+Date: 2026-10-11  
+Phase: 4  
+Context: The supplied classroom pattern must govern modelling.  
+Options considered: Retain the previous procedures; adapt the Store24 and Boston examples.  
+Decision: Use visible lm fits, backward AIC step and stepAIC verification, nested interaction and polynomial tests, correlation and coefficient comparisons. Supersedes D-009.  
+Rationale: The analysis can be followed alongside the actual course scripts.  
+Consequences or risks: Stepwise coefficient intervals are exploratory. Added terms retain their main effects.  
+Status: active
+
+## D-018
+Date: 2026-10-11  
+Phase: 3  
+Context: The student supplied course files and approved strict alignment.  
+Options considered: Rewrite the entire data pipeline; rewrite statistical analysis while retaining verified preparation.  
+Decision: Refactor analysis into sequential classroom-style R, use only sourced analytical concepts, and retain basic chronological evaluation and software checks. Supersedes conflicting requirements in Agents.md and D-002, D-009 through D-014, and D-016.  
+Rationale: The student chose analysis-only refactoring and retained the chronological split and basic metrics.  
+Consequences or risks: The earlier implementation already assessed the test season. The revised test comparison is not newly untouched evidence. Course example typos and interactive commands are corrected rather than copied.  
+Status: active
+
+## D-020
+Date: 2026-10-11  
+Phase: 5  
+Context: PCA and FA must follow the course examples.  
+Options considered: Keep the former estimators; use principal and principal-axis fa with varimax.  
+Decision: Use principal unrotated unit-variance scores, verify against prcomp, and compare unrotated with varimax principal-axis factors. Freeze training score weights. Supersedes D-010.  
+Rationale: These calls and the score construction match PCA class.R and FA.R.  
+Consequences or risks: Loadings and score weights differ. Factor scores are estimates; varimax factor orthogonality does not guarantee orthogonal estimated scores. Boundary solutions are reported.  
+Status: active

@@ -10,19 +10,27 @@ register_model <- function(name, fit, train, valid, prediction = NULL, type = "l
   append_csv(bind_cols(tibble(model = name, p, adj_r2 = adj), met), "validation_metrics")
   models[[name]] <<- list(fit = fit, type = type, validation_prediction = prediction)
 }
-choose_raw <- function(train, method) {
-  full <- checked_lm(model_formula(feature_names()), train, paste(method, "candidate pool"))
-  if (method == "Full") return(full)
-  MASS::stepAIC(full, direction = "backward", k = if(method == "BIC") log(nrow(train)) else 2, trace = FALSE)
+# Applying saved training weights is bookkeeping; fits are explicit in scripts.
+transform_strength <- function(data, fit, kind) {
+  z <- scale(as.matrix(data[, fit$vars]), center = fit$center, scale = fit$spread)
+  weights <- if (kind == "PCA") fit$pca$weights else fit$fa$weights
+  scores <- as.data.frame(z %*% weights)
+  names(scores) <- paste0(kind, seq_len(ncol(scores)))
+  bind_cols(data, scores)
 }
-rolling_raw <- function(train) {
-  years <- sort(unique(train$season)); years <- years[seq_along(years) > 5]
-  bind_rows(lapply(years, function(year) {
-    early <- train %>% filter(season < year); later <- train %>% filter(season == year)
-    bind_rows(lapply(c("Full", "AIC", "BIC"), function(method) {
-      fit <- choose_raw(early, method)
-      bind_cols(tibble(method, season = year, N_train = nrow(early), N_assess = nrow(later)),
-        metrics(later$first_innings_total, predict(fit, later)))
-    }))
-  }))
+predict_candidate <- function(name, data) {
+  entry <- models[[name]]
+  if (name == "B0 training mean") return(rep(mean(tr$first_innings_total), nrow(data)))
+  if (name == "B1 venue history") return(data$venue_avg_first_inn)
+  if (!is.null(entry$transform)) data <- transform_strength(data, combined, entry$transform)
+  if (isTRUE(entry$cluster)) data <- assign_cluster(data, cluster_fit)
+  prediction <- as.numeric(predict(entry$fit, newdata = data))
+  if (entry$type == "log") prediction <- exp(prediction)
+  prediction
+}
+group_variance <- function(data, fit) {
+  group <- assign_cluster(data, cluster_fit)$venue_cluster
+  value <- unname(fit$variances[as.character(group)])
+  value[!is.finite(value) | value <= 0] <- fit$pooled_variance
+  value
 }
