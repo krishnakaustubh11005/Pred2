@@ -13,4 +13,6 @@ all split features finite,TRUE
 test selection matches validation rule,TRUE
 all final prediction rows finite,TRUE
 interval bounds ordered,TRUE
+course scope and provenance pass,TRUE
+course analysis invariants pass,TRUE
 reported numeric values have saved-results provenance,TRUE

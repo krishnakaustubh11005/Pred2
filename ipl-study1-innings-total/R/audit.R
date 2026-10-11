@@ -22,10 +22,16 @@ run_audits <- function() {
       all(fm$id %in% figure_ids),
       nrow(rr("course_coverage")) == 8, str_detect(html, "data:image/png;base64"), str_detect(html, "code-folding"),
       all(is.finite(as.matrix(d[, feature_names()]))),
-      identical(rr("final_selection")$model, rr("validation_metrics") %>% arrange(rmse, p) %>% slice(1) %>% pull(model)),
+      identical(rr("final_selection")$model, rr("validation_metrics") %>%
+        filter(!model %in% c("B0 training mean", "B1 venue history")) %>% arrange(rmse, p) %>% slice(1) %>% pull(model)),
       all(is.finite(rr("test_predictions")$predicted)),
       all(rr("prediction_intervals")$lower <= rr("prediction_intervals")$upper)))
   save_csv(checks, "verification")
+  source(here::here("scripts", "test_course_analysis.R"))
+  scope <- rr("course_scope_audit")
+  analysis_tests <- rr("course_analysis_tests")
+  checks <- bind_rows(checks, tibble(check = c("course scope and provenance pass", "course analysis invariants pass"),
+    pass = c(all(scope$pass), all(analysis_tests$pass))))
   source(here::here("R","numerical_audit.R")); numerical <- audit_reported_numbers()
   checks <- bind_rows(checks,tibble(check="reported numeric values have saved-results provenance",pass=all(numerical$pass)))
   save_csv(checks,"verification")

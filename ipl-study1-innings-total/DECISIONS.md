@@ -18,7 +18,7 @@ Options considered: system installation or a project-local Ubuntu binary runtime
 Decision: Use compatible Ubuntu binaries locally and CRAN sources for missing packages; keep runtime artifacts out of Git.  
 Rationale: This preserves the student's system and supports its existing R.  
 Consequences or risks: The optional bootstrap is Ubuntu-specific; standard R package installation remains supported. Package versions and session information are recorded.  
-Status: active
+Status: superseded by D-018
 
 ## D-003
 Date: 2026-10-10  
@@ -86,7 +86,7 @@ Options considered: Select by training fit; select AIC/BIC/full procedures by ro
 Decision: Use AIC as the raw selection procedure; compare training-significant interaction and polynomial candidates on validation.  
 Rationale: Chronological cross-validation evaluates each selection procedure on later training seasons.  
 Consequences or risks: Stepwise selection makes ordinary coefficient intervals exploratory; significance is not proof of causal influence.  
-Status: active
+Status: superseded by D-019
 
 ## D-010
 Date: 2026-10-10  
@@ -96,7 +96,7 @@ Options considered: Kaiser-only PCA and arbitrary factors; training parallel ana
 Decision: Analyse batting, bowling and combined blocks; retain PCA components by parallel analysis; fit ML factors with oblimin and compare varimax. Apply training weights unchanged.  
 Rationale: Parallel analysis compares signal with random variation; factor identifiability prevents an overparameterised latent model.  
 Consequences or risks: FA assumptions may be weak and Heywood cases must be reported; context predictors can correlate with PCs, so overall PCR VIF need not be near unity.  
-Status: active
+Status: superseded by D-020
 
 ## D-011
 Date: 2026-10-10  
@@ -106,7 +106,7 @@ Options considered: Individual venue dummies; standardised venue-profile groups.
 Decision: Fit Ward.D2 and k-means on training profiles; choose k by maximum silhouette and report elbow and gap as supporting checks. Assign unseen venues to frozen nearest centres.  
 Rationale: Groups reduce the number of categorical predictors while allowing venue-context differences.  
 Consequences or risks: Venue sample sizes affect profiles. Unseen venues with no history use the training overall profile; cluster names describe averages, not fixed ground qualities.  
-Status: active
+Status: superseded by D-021
 
 ## D-012
 Date: 2026-10-10  
@@ -116,7 +116,7 @@ Options considered: Delete statistical outliers; retain observations and compare
 Decision: Retain flagged innings, compare excluding curtailed training innings and robust regression on the same validation target.  
 Rationale: Valid extremes are part of the actual-total prediction problem; sensitivity analyses reveal their effects.  
 Consequences or risks: Narratives identify plausible statistical explanations rather than claiming independently verified match events.  
-Status: active
+Status: superseded by D-022
 
 ## D-013
 Date: 2026-10-10  
@@ -126,7 +126,7 @@ Options considered: Assume constant variance; compare logs, WLS and HC3 inferenc
 Decision: Compare log regression with training smearing, WLS from a training variance model, and HC3 standard errors; bound fitted variances below a training residual quantile.  
 Rationale: Log retransformation needs bias correction and inverse-variance weights must remain positive.  
 Consequences or risks: Use a fitted-value White test to respect the predictor limit; report it as a reduced-form test. WLS may fail to remove heteroscedasticity. Wider intervals at high-scoring grounds are a conditional explanation, not an assumed finding.  
-Status: active
+Status: superseded by D-023
 
 ## D-014
 Date: 2026-10-10  
@@ -136,7 +136,7 @@ Options considered: Pick the best test model; freeze the lowest-validation-RMSE 
 Decision: Freeze WLS using validation RMSE, breaking exact ties by fewer predictors; retain training fit and use validation-calibrated intervals.  
 Rationale: The held-out test season measures transfer after decisions are locked.  
 Consequences or risks: Using validation for both selection and calibration weakens formal conformal coverage guarantees, as does temporal drift. Interval coverage is therefore assessed empirically; no guaranteed coverage claim is made.  
-Status: active
+Status: superseded by D-024
 
 ## D-015
 Date: 2026-10-10  
@@ -156,7 +156,7 @@ Options considered: Retain stale phase tables; refresh phase summaries from curr
 Decision: Refresh RESULTS phase tables during reproducible rebuilds; retain append-only decisions and phase commits. Use shared bootstrap date resamples for frozen-model comparisons, sequential seeded parallel analysis, and standardised numerical effect plots.  
 Rationale: These choices keep generated explanations current, random results reproducible and comparisons readable without changing the selected point forecasts.  
 Consequences or risks: Refreshing existing RESULTS sections adjusts the literal append-only workflow; historical versions remain in phase commits. Documentation and display changes after test evaluation never change model selection.  
-Status: active
+Status: superseded by D-018
 
 ## D-017
 Date: 2026-10-11  
@@ -236,4 +236,14 @@ Options considered: Keep the earlier evaluation extensions; use validation selec
 Decision: Choose Exclude influential among fitted regressions by validation RMSE, with fewer predictors breaking exact ties. Keep baseline benchmarks and classical prediction intervals. Supersedes D-014.  
 Rationale: The student explicitly retained chronological evaluation and basic metrics; interval prediction appears in the Boston script.  
 Consequences or risks: The test season was examined previously. This revision is not a new untouched experiment. Log forecasts target a median; intervals depend on the fitted model assumptions.  
+Status: active
+
+## D-025
+Date: 2026-10-11  
+Phase: 9  
+Context: Teaching materials must regenerate the syllabus-aligned analysis.  
+Options considered: Edit only the generated documents; update their generator and source report/slides.  
+Decision: Regenerate beginner chapters, mathematical PCA/FA prediction examples, course-source mappings, revised results and timed notes. Supersedes the former teaching method descriptions and evaluation narrative.  
+Rationale: A rebuild must reproduce the explanation as well as the models.  
+Consequences or risks: Report the improper separate factor solutions and interval under-coverage. Historical decisions remain as provenance, not active method specifications.  
 Status: active

@@ -62,6 +62,7 @@ save_csv(bind_rows(fa_checks), "dimension_checks")
 save_csv(bind_rows(eigen_tables), "pca_eigenvalues")
 save_csv(bind_rows(loading_tables), "pca_loadings")
 combined <- dimension_fits$Combined
+if (any(combined$fa$uniquenesses < 0)) stop("Combined principal-axis factor solution is improper; cannot use its scores for prediction")
 pctr <- transform_strength(tr, combined, "PCA")
 pcva <- transform_strength(va, combined, "PCA")
 fatr <- transform_strength(tr, combined, "FA")
@@ -109,6 +110,7 @@ loads <- unclass(combined$fa$loadings)
 save_csv(as.data.frame(as.table(loads)) %>% setNames(c("variable", "factor", "loading")), "fa_loadings")
 save_csv(as.data.frame(as.table(unclass(combined$fa_none$loadings))) %>% setNames(c("variable", "factor", "loading")), "fa_unrotated_loadings")
 phi <- if(is.null(combined$fa$Phi)) diag(ncol(loads)) else combined$fa$Phi
+dimnames(phi) <- list(colnames(loads), colnames(loads))
 save_csv(as.data.frame(as.table(phi)) %>% setNames(c("factor1", "factor2", "correlation")), "factor_correlations")
 save_plot(heatmap_plot(loads, "Factor", "Strength feature", .3), 13, "fa_loadings", glue::glue("{ncol(loads)} latent factors summarise shared strength patterns"),
  "Principal-axis extraction with varimax; small loadings are left unlabelled", "Results: Factor Analysis", "Loadings connect observed measurements to estimated latent factors.", "Factors are statistical interpretations rather than directly observed abilities.")

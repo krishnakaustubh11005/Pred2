@@ -34,3 +34,18 @@ group_variance <- function(data, fit) {
   value[!is.finite(value) | value <= 0] <- fit$pooled_variance
   value
 }
+
+assign_cluster <- function(data, fit) {
+  cluster <- fit$profiles$cluster_name[match(data$venue, fit$profiles$venue)]
+  unseen <- which(is.na(cluster))
+  for (i in unseen) {
+    # New-venue profiles use only earlier-date history, never their current total.
+    profile <- c(mean = data$venue_avg_first_inn[i], sd = data$venue_sd_first_inn[i],
+                 boundary = data$venue_boundary_rate[i], matches = data$venue_prior_matches[i])
+    if(data$venue_prior_matches[i] == 0) profile <- fit$center
+    scaled <- (profile - fit$center) / fit$spread
+    closest <- which.min(rowSums(sweep(fit$centers, 2, scaled, "-")^2))
+    cluster[i] <- fit$labels[closest]
+  }
+  data$venue_cluster <- factor(cluster, levels = fit$labels); data
+}

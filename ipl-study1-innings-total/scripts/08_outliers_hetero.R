@@ -26,7 +26,9 @@ p <- ggplot(diag, aes(leverage, studentized, size = cooks, colour = curtailed)) 
  geom_hline(yintercept = c(-3, 0, 3), linetype = "dashed") + geom_vline(xintercept = 2*(pp+1)/N, linetype = "dashed") +
  ggrepel::geom_text_repel(data = worst, aes(label = match_id), size = 3, seed = 42, show.legend = FALSE) +
  scale_colour_manual(values = c("FALSE" = unname(palette["batting"]), "TRUE" = unname(palette["bowling"]))) +
- labs(x = "Leverage", y = "Studentized residual", colour = "Shortened", size = "Cook's distance")
+ scale_size_continuous(breaks = scales::pretty_breaks(n = 3)) +
+ labs(x = "Leverage", y = "Studentized residual", colour = "Shortened", size = "Cook's distance") +
+ theme(legend.box = "vertical")
 save_plot(p, 19, "influence", glue::glue("{sum(diag$flagged)} training innings trigger an influence check"),
  "Unusual inputs, large errors and coefficient sensitivity", "Results: outlier detection", "Large bubbles affect coefficients; dashed lines mark inspection thresholds.", "Statistical flags prompt explanation rather than automatic deletion.")
 diag$order <- seq_len(nrow(diag))
@@ -59,6 +61,7 @@ effect_sd <- apply(model.matrix(best_raw)[, -1, drop = FALSE], 2, sd)
 cc <- cc %>% mutate(estimate = estimate * unname(effect_sd[term]))
 save_csv(cc, "outlier_coefficients")
 p <- ggplot(cc, aes(estimate, term, colour = treatment)) + geom_point(position = position_dodge(width = .5)) +
+ scale_colour_manual(values = c("All innings" = unname(palette["batting"]), "Exclude shortened" = unname(palette["bowling"]), "Exclude influential" = unname(palette["neutral"]))) +
  geom_vline(xintercept = 0, colour = "grey60") + labs(x = "Effect per training design-column SD (runs)", y = "Predictor", colour = "Training fit") +
  theme(axis.text.y = element_text(size = 8))
 save_plot(p, 21, "outlier_treatments", glue::glue("Three training fits inspect sensitivity across {pp} predictors"),
@@ -77,7 +80,13 @@ models[["Log total"]]$cluster <- isTRUE(models[[best_raw_name]]$cluster)
 # gqtest fits two submodels via lm.fit internally. Check both segment ratios
 # before calling the demonstrated function; order observations by season.
 segment_n <- c(floor(nrow(ctr)/2), nrow(ctr) - floor(nrow(ctr)/2))
-for (segment in seq_along(segment_n)) check_ratio(segment_n[segment], pp, paste("GQ segment", segment))
+for (test_name in c("Raw", "Log total")) for (segment in seq_along(segment_n)) {
+ label <- paste(test_name, "GQ internal OLS segment", segment)
+ check_ratio(segment_n[segment], pp, label)
+ segment_formula <- if(test_name == "Raw") formula(best_raw) else formula(logfit)
+ log_run(label, paste(deparse(segment_formula), collapse = " "), segment_n[segment], pp,
+   "training segment ordered by season", "variance diagnostic only", notes = "gqtest internal lm.fit; checked before invocation")
+}
 raw_gq <- lmtest::gqtest(best_raw, order.by = ctr$season_index)
 log_gq <- lmtest::gqtest(logfit, order.by = ctr$season_index)
 print(raw_gq)
@@ -137,7 +146,8 @@ save_plot(p, 24, "variance_remedy", glue::glue("WLS uses {length(vars)} training
  "Before and after weighting; the same standardized-residual axes are used", "Results: heteroscedasticity",
  "Compare spread within each panel.", "Weighting changes the fit; it does not ensure equal remaining variance.", TRUE)
 p <- se %>% mutate(se = se * unname(effect_sd[term])) %>% ggplot(aes(se, term, fill = method)) +
- geom_col(position = "dodge") + labs(x = "Classical effect SE per training SD (runs)", y = "Predictor", fill = "Fitted model") +
+ geom_col(position = "dodge") + scale_fill_manual(values = c(OLS = unname(palette["batting"]), WLS = unname(palette["bowling"]))) +
+ labs(x = "Classical effect SE per training SD (runs)", y = "Predictor", fill = "Fitted model") +
  theme(axis.text.y = element_text(size = 8))
 save_plot(p, 25, "classical_se", glue::glue("OLS and WLS summaries report uncertainty for {pp} effects"),
  "Classical standard errors from two differently fitted models", "Results: heteroscedasticity",

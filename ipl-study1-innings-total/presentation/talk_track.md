@@ -2,8 +2,6 @@
 
 ## Short delivery script
 
-Use the agreed 10-minute slot; keep explanations concise and point to the figure before reading a metric.
-
 
 
 | slide| seconds| cumulative_seconds|
@@ -22,125 +20,149 @@ Use the agreed 10-minute slot; keep explanations concise and point to the figure
 |    12|      65|                550|
 |    13|      50|                600|
 
-The suggested timings include pauses to explain the figures.
-
 ### Slide 1: 1. Objective: a forecast before the first ball
-The question is an actual first-innings total before the first ball, after the toss and announced XI. This gives a useful expectation against which to judge the eventual innings.
+
+Predict actual first-innings totals after the toss and initial XI announcement, before any delivery.
 
 ### Slide 2: 1. Objective: what the study asks
-We ask whether forecasts beat two simple baselines, whether player strength adds useful context, whether dimensional reduction helps, and whether unusual scores or changing variance alter the conclusions.
+
+Ask whether context and player histories beat simple benchmarks, whether compression helps, and how diagnostics change interpretation.
 
 ### Slide 3: 2. Data: earlier seasons teach, later seasons assess
-The split is chronological. test 74 innings; train 1037 innings; validation 74 innings. Later seasons remain held out while earlier ones teach the model.
+
+Read the chronological split: test 74 innings; train 1037 innings; validation 74 innings
 
 ### Slide 4: 2. Data: scores have substantial variation
-The distribution includes shortened innings. That makes the actual-total question harder, but dropping those assessment cases would change the target. Historical inputs never include the realised innings length.
+
+Shortened innings remain part of the actual-total task. Outcomes and realised length are excluded from their own inputs.
 
 ### Slide 5: 3. Methods: build history, then fit regression
-R turns deliveries into innings and strictly earlier histories. A simple venue regression starts the analysis; multiple regression introduces strength and context. Rolling training seasons compare the selection procedures.
+
+Inspect data, covariance and correlation, fit simple and multiple regression, then compare backward AIC and nested added terms as in class.
 
 ### Slide 6: 3. Methods: simplify related measurements
-PCA retains 3 combined axes; FA retains 3 factors. PCA summarises total variation, FA models shared variation, and clustering describes venue profiles. Everything learned is fitted on training seasons.
+
+PCA retains 3 components and proper combined FA retains 3 factors. Saved training weights turn inputs into scores for regression.
 
 ### Slide 7: 3. Methods: diagnose and evaluate honestly
-Diagnostics inspect errors and assumptions. Influence flags prompt sensitivity fits, while log models, WLS and HC3 address different uncertainty problems. Validation fixes the model before the test season is examined.
+
+Influence prompts labelled sensitivity fits. Goldfeld–Quandt, log response and inverse-group-variance WLS examine unequal variance. Validation chooses a regression.
 
 ### Slide 8: 4. Results: venue is an imperfect scoring anchor
-The simple fitted line gives an average relationship. The broad scatter reminds us that venue history alone cannot pin down a single cricket score. A mean confidence band is narrower than an individual prediction interval.
+
+Read the venue slope as an average association. The confidence band describes the fitted mean, while individual innings scatter around it.
 
 ### Slide 9: 4. Results: compression must preserve useful signal
-Here we compare raw regression with PCA and factor-score regression on the same validation season. Compact inputs are useful only when they retain predictive information; explained input variance is not a forecasting score.
+
+Compression explains input variation; validation error tests whether the resulting scores retain useful forecasting information. Separate FA blocks are improper.
 
 ### Slide 10: 4. Results: venue groups describe historical context
-Venue clusters describe similarities in training profiles. Group labels refer to average historical scoring context and are not permanent ground identities. New venues use earlier history and frozen centres.
+
+Clusters group venues, using standardized profiles and frozen centres. Membership tables compare average linkage with k-means.
 
 ### Slide 11: 4. Results: unusual innings deserve inspection
-Large bubbles indicate influence on regression coefficients. The case with the largest error need not be the most influential. Valid extremes remain in the forecasting problem, and shortened-innings and robust fits are explicit alternatives.
+
+Read error, leverage and Cook influence separately. Training exclusions are sensitivity alternatives; every assessment innings remains included.
 
 ### Slide 12: 4. Results: the frozen comparison decides practical value
-Validation selected WLS. Its test RMSE is 41 runs, and interval coverage is 83.8 percent. The other frozen test results are reported without changing the chosen model.
+
+Validation selected Exclude influential with test RMSE 41 runs. Nominal intervals cover 58.1 percent of test outcomes.
 
 ### Slide 13: 5. Conclusion: an expectation with measured uncertainty
-The selected model's MAE is 32.2 runs. Compare its error with both baselines before claiming practical improvement. Sparse histories, shortened matches and changing seasons limit precision; the reproducible evidence is the project's main contribution.
+
+MAE is 32.1 runs and predictive R-squared is 0.006 . The model-based intervals under-cover, limiting precision.
 
 ## Detailed speaker notes
 
-Aim for 60–90 seconds per slide during practice. These fuller notes support questions; use the short script for the timed presentation.
+Use these notes for practice and questions; use the timed script for the presentation.
 
 ### Slide 1: 1. Objective: a forecast before the first ball
-The question is an actual first-innings total before the first ball, after the toss and announced XI. This gives a useful expectation against which to judge the eventual innings.
 
-Explain the distinction between predicting a realised score and imagining a full-length innings. The realised score includes extras and interruptions. Our prediction point permits the toss and original playing XI but excludes delivery outcomes and later tactical substitutions. A fan could use the estimate as context rather than a promise; an analyst could compare an actual innings with the forecast and its interval. Be careful not to turn that residual into a causal measure of a batter's contribution, because conditions and team decisions can still be omitted.
+Predict actual first-innings totals after the toss and initial XI announcement, before any delivery.
+
+Define the target carefully. Runs include extras and shortened innings. The model uses only information available after the toss and the original roster announcement. Later impact-player choices are excluded. A score estimate can help an analyst compare an innings with its pre-match expectation, but omitted conditions prevent a causal interpretation of that comparison.
 
 ### Slide 2: 1. Objective: what the study asks
-We ask whether forecasts beat two simple baselines, whether player strength adds useful context, whether dimensional reduction helps, and whether unusual scores or changing variance alter the conclusions.
 
-Introduce the baselines before the sophisticated methods. A baseline establishes what is gained by additional modelling effort. The research questions connect the syllabus to concrete problems: correlated strength inputs motivate PCA and factor analysis, many venues motivate grouping, and unusual innings motivate diagnostic checks. Success was stated before results were seen. We report a negative outcome honestly if the model does not beat both reference rules on the final season. None of these methods produces a win probability in this study.
+Ask whether context and player histories beat simple benchmarks, whether compression helps, and how diagnostics change interpretation.
+
+Explain why each class topic has a purpose. Correlated player statistics motivate compression; venue profiles motivate grouping; regression links known inputs to the target. Outlier and variance diagnostics assess assumptions and sensitivity. Baselines establish the value of additional modelling. Success depends on observed prediction error rather than how sophisticated a method sounds.
 
 ### Slide 3: 2. Data: earlier seasons teach, later seasons assess
-The split is chronological. test 74 innings; train 1037 innings; validation 74 innings. Later seasons remain held out while earlier ones teach the model.
 
-Read the timeline from left to right and name which season is validation and which is test using the saved split table. We confirmed completion using a recorded final, rather than assuming the latest calendar label was complete. Matches on a shared date cannot contribute outcomes to one another's histories. Venue and player features may update from earlier observed matches during validation and test; this simulates forecasts made match by match, rather than predictions made for a whole season before it begins.
+Read the chronological split: test 74 innings; train 1037 innings; validation 74 innings
+
+The split preserves the ordering of seasons. The latest two completed seasons supply validation and test. All learned means, SDs, score weights and cluster centres come from training. Earlier observed matches can update historical features during assessment, simulating forecasts made match by match. The test season was seen in the earlier implementation and this revision is not a new untouched experiment.
 
 ### Slide 4: 2. Data: scores have substantial variation
-The distribution includes shortened innings. That makes the actual-total question harder, but dropping those assessment cases would change the target. Historical inputs never include the realised innings length.
 
-Point out that the target includes extras and that all-out innings differ from curtailed innings. A low score is not automatically poor batting: fewer available deliveries can create the same total. Our cleaning preserves those cases and records flags for sensitivity analysis. Stable registry identifiers prevent renames or player-name variations from erasing history. JSON substitution records are used only to reconstruct the original XI, not to let a later incoming player influence the pre-innings forecast. Reference tables document stadium and franchise aliases.
+Shortened innings remain part of the actual-total task. Outcomes and realised length are excluded from their own inputs.
+
+Read the distribution before discussing models. The average describes a centre, and standard deviation describes variation across innings. Season means and venue boxplots reveal context differences. Low totals can arise from interruptions as well as poor batting. The pipeline records those outcomes for inspection while keeping them out of prediction inputs. Identity mappings preserve player and franchise histories.
 
 ### Slide 5: 3. Methods: build history, then fit regression
-R turns deliveries into innings and strictly earlier histories. A simple venue regression starts the analysis; multiple regression introduces strength and context. Rolling training seasons compare the selection procedures.
 
-Explain least squares using the vertical distances between points and the fitted line. Adding predictors changes what a coefficient means because it now holds more inputs fixed. Count dummy columns and proposed interaction terms, not only names in the source table. AIC and BIC are procedures that balance training fit and complexity; rolling-origin assessment asks which procedure predicts the next season better. Stepwise coefficient significance is exploratory because the data helped select the specification. VIF is evidence of overlapping inputs, not evidence that forecasting is impossible.
+Inspect data, covariance and correlation, fit simple and multiple regression, then compare backward AIC and nested added terms as in class.
+
+Use the class sequence: fit lm, inspect summary and confint, inspect residuals, then predict. Multiple regression holds other inputs fixed. Backward AIC removes terms when the criterion improves, and stepAIC verifies the same selection. Added interaction and squared terms start from the full model, retaining main effects. Post-selection significance is exploratory. Correlations and the coefficient-swing table make overlap visible.
 
 ### Slide 6: 3. Methods: simplify related measurements
-PCA retains 3 combined axes; FA retains 3 factors. PCA summarises total variation, FA models shared variation, and clustering describes venue profiles. Everything learned is fitted on training seasons.
 
-Describe PCA as a new set of directions through the standardised input cloud and FA as a model for shared variation with uniqueness. Their mathematical outputs look similar, but their goals and assumptions differ. KMO and Bartlett support inspection of suitability rather than proving the latent model. Parallel analysis compares observed structure with random references, while identifiability limits the factor count. Cluster profiles use training venue totals, spread, boundaries and match counts. Held-out observations use training scaling, loadings and centres without recomputing those learned quantities.
+PCA retains 3 components and proper combined FA retains 3 factors. Saved training weights turn inputs into scores for regression.
+
+Walk through standardisation, weights and scores. For PCA, eigenvectors identify directions and eigenvalues measure input variation. Loadings differ from the weights used to compute the class function's unit-variance scores. FA uses principal-axis extraction with varimax and separates common variation from uniqueness. Negative uniqueness in the separate blocks is improper; only the proper combined solution supplies factor forecasts. Both score types enter an ordinary regression with context.
 
 ### Slide 7: 3. Methods: diagnose and evaluate honestly
-Diagnostics inspect errors and assumptions. Influence flags prompt sensitivity fits, while log models, WLS and HC3 address different uncertainty problems. Validation fixes the model before the test season is examined.
 
-Separate diagnosis from remedy. A large residual concerns a score surprise; leverage concerns unusual historical inputs; influence concerns movement in the fitted coefficients. Robust regression downweights large errors, while excluding shortened training innings changes exposure in the fitting sample. Heteroscedasticity concerns conditional variance. HC3 adjusts uncertainty without changing forecasts, and WLS changes the fit using positive weights from a training variance model. Validation makes the final choice and also calibrates intervals, so later coverage is assessed empirically rather than advertised as guaranteed.
+Influence prompts labelled sensitivity fits. Goldfeld–Quandt, log response and inverse-group-variance WLS examine unequal variance. Validation chooses a regression.
+
+A large residual is an unexpected score; leverage is an unusual input combination; influence describes changes in the fit if a case is removed. These are different questions. The class heteroscedasticity script motivates residual plots, Goldfeld–Quandt testing, log response and group-variance weighting. The inverse variances are training estimates. A clearer residual plot does not ensure better forecasts, so validation compares the alternatives.
 
 ### Slide 8: 4. Results: venue is an imperfect scoring anchor
-The simple fitted line gives an average relationship. The broad scatter reminds us that venue history alone cannot pin down a single cricket score. A mean confidence band is narrower than an individual prediction interval.
 
-Use the equation and axes to explain the venue slope in runs per extra run of earlier venue average. An intercept outside the observed venue range is not a realistic cricket forecast. The confidence ribbon describes uncertainty around the average fitted line, while the scatter contains individual-match variation. Mention that residual plots are needed to assess curvature, non-normal tails and changing spread. The simple model is valuable as an interpretable benchmark even when a more complex candidate predicts better. Avoid implying that changing grounds directly causes the estimated score difference.
+Read the venue slope as an average association. The confidence band describes the fitted mean, while individual innings scatter around it.
+
+Use the equation to explain a slope in runs per extra run of earlier venue average. Coefficients describe associations rather than the causal effect of changing grounds. Mean confidence bands and individual prediction intervals have different purposes. Residual panels examine curvature, tails, spread and leverage. An intercept evaluated outside the observed input range is not a realistic cricket scenario.
 
 ### Slide 9: 4. Results: compression must preserve useful signal
-Here we compare raw regression with PCA and factor-score regression on the same validation season. Compact inputs are useful only when they retain predictive information; explained input variance is not a forecasting score.
 
-Read the common context effects and validation error side by side. The plotted effects share training-standard-deviation scales, whereas principal-component and factor-score coefficients use transformed units and should not be compared directly with raw strength coefficients. Components with high input variance can still carry weak score information. PCA scores are orthogonal within the fitted strength block, but can correlate with context variables, so overall PCR VIF need not equal unity. Factor correlations and uniqueness provide extra interpretation. Report warnings or near-boundary factor solutions instead of using confident hidden-ability labels.
+Compression explains input variation; validation error tests whether the resulting scores retain useful forecasting information. Separate FA blocks are improper.
+
+Compare the same validation targets across raw, component and factor regressions. Input variance explained does not measure target accuracy. The numerical learning-guide example multiplies standardized inputs by training weights and sums to create a score. The regression then multiplies scores and context by its coefficients and adds an intercept. Estimated factor scores can correlate even under an orthogonal latent model. Report improper solutions openly.
 
 ### Slide 10: 4. Results: venue groups describe historical context
-Venue clusters describe similarities in training profiles. Group labels refer to average historical scoring context and are not permanent ground identities. New venues use earlier history and frozen centres.
 
-Explain that the heatmap expresses group averages relative to training venue means. The match-count feature helps describe confidence and historical frequency, but also influences the distance used to group grounds. Elbow, silhouette and gap may disagree; the recorded maximum-silhouette rule makes the choice reproducible. Ward.D2 supplies an independent hierarchical comparison, and adjusted Rand agreement summarises whether the partitions are similar. None of this proves the groups improve forecasts: the regression with venue groups is separately evaluated on validation. A new venue with no history uses the training overall profile.
+Clusters group venues, using standardized profiles and frozen centres. Membership tables compare average linkage with k-means.
+
+Explain Euclidean distances after scaling. Single, complete and average linkage define different between-group distances. K-means iterates closest-centre assignments and updates means. The elbow and silhouette examine grouping, while a recorded maximum-silhouette rule chooses the count. Membership labels are arbitrary; use contingency tables to compare algorithms. New venues use earlier history and frozen centres, with a training-profile fallback when no history exists.
 
 ### Slide 11: 4. Results: unusual innings deserve inspection
-Large bubbles indicate influence on regression coefficients. The case with the largest error need not be the most influential. Valid extremes remain in the forecasting problem, and shortened-innings and robust fits are explicit alternatives.
 
-Read horizontal leverage, vertical studentized error and bubble-size Cook's distance separately. Threshold crossings invite inspection rather than deletion. The table gives plausible cricket explanations such as shortened exposure or an unusually high total; those statements are not independently verified match narratives. Coefficient sensitivity is assessed with all innings, without shortened training innings and with robust fitting, while assessment rows remain the same. Variance diagnostics ask a different question about changing residual spread. A small p-value may identify an assumption problem without identifying the best predictive remedy.
+Read error, leverage and Cook influence separately. Training exclusions are sensitivity alternatives; every assessment innings remains included.
+
+Describe the saved thresholds as inspection references rather than proof of recording errors. Cook-influential training cases are omitted only in a labelled alternative, and shortened innings are excluded in another. Assessment remains common to all candidates. A case-removal model may reduce fitted residual spread and produce overly narrow classical intervals. Its point forecast and uncertainty must therefore be assessed separately.
 
 ### Slide 12: 4. Results: the frozen comparison decides practical value
-Validation selected WLS. Its test RMSE is 41 runs, and interval coverage is 83.8 percent. The other frozen test results are reported without changing the chosen model.
 
-Read lower RMSE as better prediction on the same untouched season. Uncertainty bars come from resampling match dates so same-day observations remain together. The validation-selected candidate stays selected even if another frozen candidate has the lowest test error. Predictive R-squared can be negative because it compares squared error with the held-out score mean. Prediction intervals use earlier validation residuals, and their observed coverage can miss the nominal level under season shifts. They communicate uncertainty about an individual innings; they are not coefficient confidence intervals or proof of guaranteed future coverage.
+Validation selected Exclude influential with test RMSE 41 runs. Nominal intervals cover 58.1 percent of test outcomes.
+
+The final model was selected with validation error and retained before revised test metrics were computed. The smallest test error does not replace that choice. Prediction intervals come from predict.lm under model assumptions, not from an added calibration method. Nominal and empirical coverage are different. Substantial under-coverage means the reported individual-score uncertainty is inadequate for these test innings. State this limitation beside the point-error results.
 
 ### Slide 13: 5. Conclusion: an expectation with measured uncertainty
-The selected model's MAE is 32.2 runs. Compare its error with both baselines before claiming practical improvement. Sparse histories, shortened matches and changing seasons limit precision; the reproducible evidence is the project's main contribution.
 
-Answer each research question using the saved comparison tables rather than recollection. State the selected model's error, the baseline relationship and observed interval coverage. The practical conclusion may be that a simple history-based forecast competes well with sophisticated transformations. Explain limitations that change interpretation: shortened innings, sparse careers, combined venue identities, unknown later substitutions and temporal scoring shifts. Future work could use independently verified weather forecasts and an additional calibration season. End by explaining that a reproducible result that exposes its weaknesses is more defensible than an impressive-looking fit obtained with future information.
+MAE is 32.1 runs and predictive R-squared is 0.006 . The model-based intervals under-cover, limiting precision.
+
+Answer the research questions from saved results. Compare error against both baselines and explain the weak predictive R-squared. Correlated histories, sparse player experience, inferred roles, shortened matches and changing seasons limit accuracy. Principal-axis factor assumptions fail in the separate blocks, and the selected model's classical intervals under-cover. A genuinely later season would provide new evidence. The contribution is a reproducible and understandable application of the supplied course methods.
 
 ## Likely professor questions
 
-- **Why predict actual totals rather than full-length totals?** The agreed target includes what actually happened. Shortened innings remain in assessment, and we test sensitivity to their removal from fitting.
-- **How did you prevent leakage?** Features use strictly earlier dates, including double-headers. Initial XIs are reconstructed from substitution records, and a saved brute-force reconstruction audit checks sampled rows.
-- **Why a time split?** The practical task predicts later seasons from earlier cricket. Random allocation would mix future scoring conditions into training.
-- **Did you respect the predictor limit?** Each candidate and fitted design matrix is logged; dummy columns, components, factors and added terms count separately. The final ratio audit must pass.
-- **Why both PCA and FA?** PCA summarises total input variation; FA models shared variation plus uniqueness. Their validation forecasts test whether either representation preserves useful score information.
-- **Why can coefficients change with more variables?** Coefficients become conditional on different information; overlapping histories can redistribute estimated associations. VIF and the coefficient-swing table expose this.
-- **Why not delete outliers?** A valid extraordinary innings belongs to the target population. We retain flags and compare robust and shortened-innings alternatives on common validation outcomes.
-- **What does HC3 improve?** Coefficient uncertainty under unequal variance. It leaves fitted values and point-prediction error unchanged.
-- **Which model won, and did you change it after testing?** Validation chose WLS. Its final test RMSE is 41 runs. Test rankings did not alter the frozen choice.
-- **Can you guarantee interval coverage next season?** No. Observed test coverage is 83.8 percent; temporal drift and shared validation selection/calibration prevent a guaranteed-coverage claim.
+- **Why actual totals?** The agreed target includes shortened matches; changing that target would change the question.
+- **How is leakage prevented?** Strictly earlier dates, original XIs, fixed training transformations and independent historical reconstruction checks.
+- **Why a time split?** Later matches should be predicted from earlier evidence. The revised test season was assessed previously.
+- **How is the predictor limit checked?** Every design column, including dummy and score columns, is counted before fitting; internal selection fits are audited.
+- **Are loadings and weights interchangeable?** No. Loadings describe an axis or factor; score weights calculate each match's numerical score.
+- **How do PCA and FA predict runs?** They create scores; lm uses those scores and context to predict runs.
+- **What does negative uniqueness mean?** An improper factor solution. The separate blocks are reported as such; the proper combined fit supplies forecasts.
+- **Why not delete every flag?** A valid extreme is part of the task. Labelled training sensitivity fits are compared on unchanged assessment rows.
+- **Which model won?** Validation chose Exclude influential . Test RMSE is 41 runs; test ranks do not alter that choice.
+- **Are the intervals reliable?** Observed coverage is 58.1 percent versus nominal 80 percent. They substantially under-cover.

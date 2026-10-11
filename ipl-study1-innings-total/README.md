@@ -43,9 +43,16 @@ run `Rscript scripts/repair_runtime.R`. On a standard system install Pandoc usin
 `sudo apt install pandoc`. Offline rebuilds work after both raw archives and dependencies
 are present; initial downloads need network access.
 
-Outcome plots before final evaluation use training data; earlier model comparisons
-use validation. The latest completed season is scored only after the final choice is
-frozen. A rerun reproduces that same procedure; it does not invite selection by test results.
+The statistical scripts follow the supplied classroom examples. Read the
+[course alignment](docs/04_course_alignment.md) and the numerical PCA/FA prediction
+example in the learning guide. Keep the sibling ../Predictive Modelling/ directory
+available: source paths and hashes make the syllabus alignment reproducible.
+
+Outcome exploration uses training data; validation selects among fitted regressions.
+The revised test comparison follows that frozen choice. The test season was assessed
+in the earlier implementation, so this revision is not a newly untouched experiment.
+The report explains improper separate factor solutions and classical interval
+under-coverage. A future season is needed for new independent evidence.
 
 Source archive hashes are locked in `data/reference/source_lock.csv`. Cricsheet's
 live archives can change, so preserve this study's downloaded archives for exact

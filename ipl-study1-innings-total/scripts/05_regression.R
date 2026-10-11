@@ -12,7 +12,7 @@ simple <- lm(first_innings_total ~ venue_avg_first_inn, data = tr)
 print(summary(simple))
 print(confint(simple))
 register_model("Simple", simple, tr, va)
-save_csv(broom::tidy(simple, conf.int = TRUE), "simple_coefficients"); save_csv(broom::glance(simple), "simple_summary")
+save_csv(broom::tidy(simple, conf.int = TRUE), "simple_coefficients"); save_csv(broom::glance(simple) %>% select(r.squared, adj.r.squared, sigma, statistic, p.value, df, df.residual, nobs), "simple_summary")
 grid <- tibble(venue_avg_first_inn = seq(min(tr$venue_avg_first_inn), max(tr$venue_avg_first_inn), length.out = 100))
 grid <- bind_cols(grid, as_tibble(predict(simple, grid, interval = "confidence")))
 p <- ggplot(tr, aes(venue_avg_first_inn, first_innings_total)) + geom_point(alpha = .3, colour = palette["batting"]) +
@@ -57,7 +57,7 @@ save_csv(partial, "partial_f_tests")
 # Only training evidence decides whether these extensions enter the candidate set.
 if (partial$p_value[1] < .05) register_model("Multiple interaction", fi, tr, va)
 if (partial$p_value[2] < .05) register_model("Multiple polynomial", fp, tr, va)
-save_csv(broom::tidy(raw, conf.int = TRUE), "multiple_coefficients"); save_csv(broom::glance(raw), "multiple_summary")
+save_csv(broom::tidy(raw, conf.int = TRUE), "multiple_coefficients"); save_csv(broom::glance(raw) %>% select(r.squared, adj.r.squared, sigma, statistic, p.value, df, df.residual, nobs), "multiple_summary")
 strength_correlation <- cor(tr$bat_strike_rate, tr$bat_boundary_pct)
 save_csv(tibble(feature1 = "bat_strike_rate", feature2 = "bat_boundary_pct", correlation = strength_correlation), "correlated_strength")
 p <- ggplot(tr, aes(bat_strike_rate, bat_boundary_pct)) + geom_point(alpha = .3, colour = palette["batting"]) +
@@ -69,7 +69,7 @@ effects <- broom::tidy(raw, conf.int = TRUE) %>% filter(term != "(Intercept)") %
         estimate = estimate * training_sd, conf.low = conf.low * training_sd, conf.high = conf.high * training_sd)
 save_csv(effects,"standardised_coefficients")
 save_plot(coef_plot(effects) + labs(x = "Score change per training SD (runs)"), 9, "coefficients", glue::glue("{length(coef(raw))-1} predictors remain in the selected raw model"),
- "Effects and confidence intervals scaled to one training standard deviation", "Results: multiple regression", "Intervals crossing zero indicate uncertain conditional effects; the common scale permits comparison.", "Each effect holds other included predictors fixed and is not causal; original units remain in the coefficient table.")
+ "Backward-AIC effects and intervals scaled to one training SD", "Results: multiple regression", "Intervals crossing zero indicate uncertain conditional effects; the common scale permits comparison.", "Each effect holds other included predictors fixed and is not causal; original units remain in the coefficient table.")
 swing <- bind_rows(broom::tidy(simple) %>% mutate(model = "Simple"), broom::tidy(full) %>% mutate(model = "Full")) %>% filter(term == "venue_avg_first_inn")
 save_csv(swing, "coefficient_swing")
 decision("D-019", 4, "The supplied classroom pattern must govern modelling.",

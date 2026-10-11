@@ -1,0 +1,15 @@
+check,pass
+excluded analytical call absent: vif,TRUE
+excluded analytical call absent: bptest,TRUE
+excluded analytical call absent: vcovHC,TRUE
+excluded analytical call absent: clusGap,TRUE
+excluded analytical call absent: rlm,TRUE
+excluded analytical call absent: rolling_raw,TRUE
+excluded analytical call absent: choose_raw,TRUE
+excluded analytical call absent: replicate,TRUE
+excluded analytical call absent: sample,TRUE
+course reference files exist,TRUE
+course source hashes match,TRUE
+principal-axis varimax settings,TRUE
+unrotated principal component settings,TRUE
+all eight topics mapped,TRUE

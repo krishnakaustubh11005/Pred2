@@ -35,20 +35,6 @@ save_csv(selection, "cluster_selection")
 save_csv(profiles, "venue_profiles")
 save_csv(tibble(k, silhouette = max(selection$silhouette), main_linkage = "average", random_starts = 25), "cluster_summary")
 cluster_fit <- list(profiles = profiles, center = center, spread = spread, centers = centers, labels = labels)
-assign_cluster <- function(data, fit) {
-  cluster <- fit$profiles$cluster_name[match(data$venue, fit$profiles$venue)]
-  unseen <- which(is.na(cluster))
-  for (i in unseen) {
-    # New-venue profiles use only earlier-date history, never their current total.
-    profile <- c(mean = data$venue_avg_first_inn[i], sd = data$venue_sd_first_inn[i],
-                 boundary = data$venue_boundary_rate[i], matches = data$venue_prior_matches[i])
-    if(data$venue_prior_matches[i] == 0) profile <- fit$center
-    scaled <- (profile - fit$center) / fit$spread
-    closest <- which.min(rowSums(sweep(fit$centers, 2, scaled, "-")^2))
-    cluster[i] <- fit$labels[closest]
-  }
-  data$venue_cluster <- factor(cluster, levels = fit$labels); data
-}
 ctr <- assign_cluster(tr, cluster_fit); cva <- assign_cluster(va, cluster_fit)
 cluster_formula <- update(formula(raw), . ~ . + venue_cluster)
 check_ratio(nrow(ctr), ncol(model.matrix(cluster_formula, ctr)) - 1, "Multiple regression with venue groups")

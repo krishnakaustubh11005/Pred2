@@ -1,2 +1,2 @@
-model,validation_rmse,refit_policy,test_status
-Exclude influential,38.577035853021435,retain training fit; classical prediction intervals,previously assessed season; no test-guided selection in this revision
+model,validation_rmse,training_N,predictors,refit_policy,test_status
+Exclude influential,38.577035853021435,983,17,retain training fit; classical prediction intervals,previously assessed season; no test-guided selection in this revision

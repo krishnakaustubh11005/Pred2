@@ -182,9 +182,9 @@ simple_summary:
 
 
 
-| r.squared| adj.r.squared|  sigma| statistic| p.value| df|  logLik|     AIC|      BIC| deviance| df.residual| nobs|
-|---------:|-------------:|------:|---------:|-------:|--:|-------:|-------:|--------:|--------:|-----------:|----:|
-|     0.008|         0.007| 31.852|     8.497|   0.004|  1| -5059.6| 10125.2| 10140.03|  1050061|        1035| 1037|
+| r.squared| adj.r.squared|  sigma| statistic| p.value| df| df.residual| nobs|
+|---------:|-------------:|------:|---------:|-------:|--:|-----------:|----:|
+|     0.008|         0.007| 31.852|     8.497|   0.004|  1|        1035| 1037|
 
 validation_metrics:
 
@@ -365,9 +365,9 @@ final_selection:
 
 
 
-|model               | validation_rmse|refit_policy                                        |test_status                                                           |
-|:-------------------|---------------:|:---------------------------------------------------|:---------------------------------------------------------------------|
-|Exclude influential |          38.577|retain training fit; classical prediction intervals |previously assessed season; no test-guided selection in this revision |
+|model               | validation_rmse| training_N| predictors|refit_policy                                        |test_status                                                           |
+|:-------------------|---------------:|----------:|----------:|:---------------------------------------------------|:---------------------------------------------------------------------|
+|Exclude influential |          38.577|        983|         17|retain training fit; classical prediction intervals |previously assessed season; no test-guided selection in this revision |
 
 test_metrics:
 
@@ -402,7 +402,7 @@ What I learned: Keep the validation choice even if its test ranking differs.
 
 Open questions: Are the observed errors and interval coverage useful in practice?
 
-## Phase 9: Documentation and presentation
+## Phase 9: Course-aligned documentation
 
 course_coverage:
 
@@ -419,28 +419,46 @@ course_coverage:
 |Outlier Detection   |08_outliers_hetero.R       |f19–f21      |Methods and Results |
 |Heteroscedasticity  |08_outliers_hetero.R       |f22–f25      |Methods and Results |
 
+course_alignment:
+
+
+
+|topic               |method                                                        |source                                                                        |
+|:-------------------|:-------------------------------------------------------------|:-----------------------------------------------------------------------------|
+|Introduction to R   |Import, inspect, summaries, covariance and correlation        |../Predictive Modelling/Intro to R/Introductory R and graphics (2).R          |
+|Simple Regression   |lm, summary, confint, predict and residual diagnostics        |../Predictive Modelling/Multiple Regression/Boston data analysis.txt          |
+|Multiple Regression |Multiple lm, backward step / stepAIC, squared terms and anova |../Predictive Modelling/Multiple Regression/Store24.R                         |
+|PCA                 |Parallel analysis, principal scores and prcomp comparison     |../Predictive Modelling/PCA/PCA class.R                                       |
+|Factor Analysis     |Principal-axis fa with no rotation and varimax                |../Predictive Modelling/FA/FA.R                                               |
+|Cluster Analysis    |Scale, Euclidean distance and average-linkage clustering      |../Predictive Modelling/Cluster Analysis/CA.R                                 |
+|Cluster Analysis    |Complete linkage, k-means, elbow and silhouette               |../Predictive Modelling/Cluster Analysis/cluster analysis.txt                 |
+|Cluster Analysis    |Single linkage, cutree, centres and membership tables         |../Predictive Modelling/Cluster Analysis/Cluster Analysis Utilities example.R |
+|Outlier Detection   |Studentized residuals, leverage, Cook, DFFITS and DFBETAS     |../Predictive Modelling/Outliers/outliers.R                                   |
+|Outlier Detection   |Mahalanobis distance with covariance adjustment               |../Predictive Modelling/Cluster Analysis/Cluster Analysis.pdf                 |
+|Heteroscedasticity  |Goldfeld–Quandt, log response and group-variance WLS          |../Predictive Modelling/Heteroscedasticity/Heteroskedasticity.R               |
+
 speaker_note_lengths:
 
 
 
 | slide| detailed_words|
 |-----:|--------------:|
-|     1|            116|
-|     2|            109|
-|     3|            106|
-|     4|            110|
-|     5|            115|
-|     6|            114|
-|     7|            112|
-|     8|            125|
-|     9|            121|
-|    10|            118|
-|    11|            120|
-|    12|            117|
+|     1|             67|
+|     2|             69|
+|     3|             74|
+|     4|             76|
+|     5|             80|
+|     6|             86|
+|     7|             80|
+|     8|             80|
+|     9|             84|
+|    10|             77|
+|    11|             77|
+|    12|             82|
 
-The report and slides render from actual saved outputs. The beginner guide connects every method to a question, assumptions and interpretation.
+The report, slides and guides regenerate from saved results and identify the source course examples.
 
-What I learned: Clear explanation is part of the evidence, not decoration after modelling.
+What I learned: Explaining score construction and prediction makes the methods reviewable.
 
-Open questions: What would an independent reader need to reproduce and challenge this study?
+Open questions: What new season would provide genuinely new evidence?
 

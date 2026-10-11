@@ -1,0 +1,18 @@
+check,pass
+training scores reconstruct from saved weights,TRUE
+unrotated component scores are orthogonal,TRUE
+class principal scores agree with scaled prcomp,TRUE
+improper separate factor solutions are flagged,TRUE
+prediction factor solution has nonnegative uniqueness,TRUE
+later-row changes cannot alter another row's scaling,TRUE
+test factor scores remain finite,TRUE
+group-variance weights remain positive,TRUE
+invalid group variance uses pooled fallback,TRUE
+unseen venue gets a valid frozen cluster,TRUE
+persisted bundle reproduces every test prediction,TRUE
+all candidates assess the same test innings,TRUE
+intervals are finite and contain point forecasts,TRUE
+coverage matches observed inclusions,TRUE
+teaching arithmetic equals saved forecasts,TRUE
+modelling data unchanged from before refactor,TRUE
+season split unchanged from before refactor,TRUE

@@ -6,6 +6,7 @@ eligible <- eligible[order(eligible$rmse, eligible$p), ]
 winner <- eligible$model[1]
 entry <- models[[winner]]
 save_csv(data.frame(model = winner, validation_rmse = eligible$rmse[1],
+ training_N = nobs(entry$fit), predictors = length(coef(entry$fit)) - 1,
  refit_policy = "retain training fit; classical prediction intervals",
  test_status = "previously assessed season; no test-guided selection in this revision"), "final_selection")
 saveRDS(list(winner = winner, models = models, dimension_fits = dimension_fits, cluster_fit = cluster_fit,
@@ -59,7 +60,7 @@ save_plot(p, 26, "test_predictions", glue::glue("{winner} reaches test RMSE {rou
  "Points near equality predict well; bars describe individual-score uncertainty.",
  glue::glue("Observed interval coverage is {round(100*coverage,1)}%; model assumptions and season changes affect coverage."))
 p <- ggplot(test_metrics, aes(rmse, reorder(model, rmse))) + geom_point(aes(colour = model == winner), size = 3) +
- scale_colour_manual(values = c("FALSE" = unname(palette["batting"]), "TRUE" = unname(palette["bowling"]))) +
+ scale_colour_manual(values = c("FALSE" = unname(palette["batting"]), "TRUE" = unname(palette["bowling"])), labels = c("Other", "Selected")) +
  labs(x = "Test RMSE (runs)", y = "Candidate", colour = "Selected on validation")
 save_plot(p, 27, "test_comparison", glue::glue("The validation choice ranks {test_metrics$test_rank[match(winner, test_metrics$model)]} on test error"),
  "Same held-out innings for every candidate; no extra uncertainty procedure", "Results: final evaluation",
@@ -69,9 +70,10 @@ errors <- data.frame(season = c(unique(va$season), unique(te$season)),
  source = c("Validation", "Test"))
 save_csv(errors, "season_errors")
 p <- ggplot(errors, aes(factor(season), rmse, fill = source)) + geom_col(width = .5) +
+ scale_fill_manual(values = c(Validation = unname(palette["validation"]), Test = unname(palette["test"]))) +
  geom_text(aes(label = round(rmse,1)), vjust = -.4) + expand_limits(y = max(errors$rmse)*1.1) +
  labs(x = "Assessment season", y = "RMSE (runs)", fill = "Assessment")
-save_plot(p, 28, "season_error", glue::glue("The selected model's error changes by {round(diff(errors$rmse),1)} runs"),
+save_plot(p, 28, "season_error", glue::glue("Test error is {round(abs(diff(errors$rmse)),1)} runs {if(diff(errors$rmse)>=0) 'higher' else 'lower'} than validation"),
  "The same frozen model is assessed on validation and test seasons", "Results: final evaluation",
  "Bar heights show error with a common zero origin.", "Season changes can alter forecasting performance.")
 log_run(paste("Final", winner), paste(deparse(formula(entry$fit)), collapse = " "), nobs(entry$fit),

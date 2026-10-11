@@ -59,7 +59,7 @@ Shortened innings remain part of the actual-total question.
 - R imports, cleans and aggregates deliveries.
 - Every historical feature uses **strictly earlier dates**.
 - Simple regression starts with venue; multiple regression adds team strength and context.
-- Rolling season assessment compares full, AIC and BIC procedures.
+- The class examples compare full regression and backward AIC selection.
 
 Every candidate pool and fitted regression must pass the course's predictor limit.
 
@@ -77,9 +77,9 @@ Scaling, loadings, factor weights and cluster centres are learned from training 
 
 Influence checks lead to sensitivity analysis, not automatic deletion.
 
-Log models, WLS and HC3 address different variance concerns.
+Goldfeld–Quandt testing, log-response regression and group-variance WLS inspect unequal variance.
 
-Validation chooses the model; the latest completed season supplies one frozen evaluation.
+Validation chooses the model; the previously assessed final season supplies the revised evaluation.
 
 RMSE measures large-error sensitivity; MAE measures typical absolute error.
 

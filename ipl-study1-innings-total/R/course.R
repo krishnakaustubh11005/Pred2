@@ -36,3 +36,39 @@ record_course_sources <- function() {
     "The student chose analysis-only refactoring and retained the chronological split and basic metrics.",
     "The earlier implementation already assessed the test season. The revised test comparison is not newly untouched evidence. Course example typos and interactive commands are corrected rather than copied.")
 }
+
+# Inspect executed calls rather than matching words inside comments or examples.
+course_scope_audit <- function() {
+  paths <- c(here::here("R", "modelling.R"), here::here("R", "diagnostics.R"),
+    list.files(here::here("scripts"), pattern = "^0[4-9]_.*\\.R$", full.names = TRUE))
+  calls <- character()
+  walk <- function(x) {
+    if (is.call(x)) {
+      head <- x[[1]]
+      if (is.symbol(head)) calls <<- c(calls, as.character(head))
+      if (is.call(head) && as.character(head[[1]]) %in% c("::", ":::"))
+        calls <<- c(calls, as.character(head[[3]]))
+    }
+    if (is.call(x) || is.expression(x) || is.pairlist(x)) {
+      parts <- as.list(x)
+      for (i in seq_along(parts)) {
+        if (identical(parts[[i]], quote(expr=))) next
+        walk(parts[[i]])
+      }
+    }
+  }
+  for (path in paths) walk(parse(path))
+  excluded <- c("vif", "bptest", "vcovHC", "clusGap", "rlm", "rolling_raw", "choose_raw", "replicate", "sample")
+  scope <- data.frame(check = paste("excluded analytical call absent:", excluded), pass = !excluded %in% calls)
+  alignment <- read.csv(here::here("results", "course_alignment.csv"))
+  manifest <- read.csv(here::here("results", "course_source_manifest.csv"))
+  scope <- rbind(scope, data.frame(check = c("course reference files exist", "course source hashes match",
+    "principal-axis varimax settings", "unrotated principal component settings", "all eight topics mapped"),
+    pass = c(all(file.exists(here::here(alignment$source))),
+      identical(unname(tools::md5sum(here::here(manifest$source))), manifest$md5),
+      all(vapply(dimension_fits, function(f) f$fa$fm == "pa" && f$fa$rotation == "varimax", logical(1))),
+      all(vapply(dimension_fits, function(f) is.null(f$pca$rot.mat), logical(1))),
+      length(unique(alignment$topic)) == 8)))
+  save_csv(scope, "course_scope_audit")
+  scope
+}
