@@ -197,3 +197,13 @@ Decision: Use principal unrotated unit-variance scores, verify against prcomp, a
 Rationale: These calls and the score construction match PCA class.R and FA.R.  
 Consequences or risks: Loadings and score weights differ. Factor scores are estimates; varimax factor orthogonality does not guarantee orthogonal estimated scores. Boundary solutions are reported.  
 Status: active
+
+## D-021
+Date: 2026-10-11  
+Phase: 6  
+Context: Venue clustering must match the supplied class scripts.  
+Options considered: Keep the earlier choices; compare the linkage and k-means methods taught in class.  
+Decision: Use scaled Euclidean profiles, single/complete/average linkage, k-means with the classroom random-start count, elbow and maximum silhouette. Compare memberships with tables. Supersedes D-011.  
+Rationale: These procedures appear in CA.R, cluster analysis.txt and the Utilities example.  
+Consequences or risks: Clusters are descriptive. Small venue histories influence profiles; unseen venues retain the frozen-centre fallback.  
+Status: active

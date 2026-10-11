@@ -1,2 +1,2 @@
-k,adjusted_rand_index,silhouette,gap_recommended
-2,1,0.3949592656515232,1
+k,silhouette,main_linkage,random_starts
+2,0.3949592656515232,average,25

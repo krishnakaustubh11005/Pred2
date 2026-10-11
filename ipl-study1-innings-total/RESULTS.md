@@ -259,33 +259,52 @@ What I learned: PCA summarises total variation; FA models shared variation plus 
 
 Open questions: Does compressing inputs retain useful predictive information?
 
-## Phase 6: Venue clustering
+## Phase 6: Course-aligned venue clustering
 
 cluster_summary:
 
 
 
-|  k| adjusted_rand_index| silhouette| gap_recommended|
-|--:|-------------------:|----------:|---------------:|
-|  2|                   1|      0.395|               1|
+|  k| silhouette|main_linkage | random_starts|
+|--:|----------:|:------------|-------------:|
+|  2|      0.395|average      |            25|
 
 cluster_selection:
 
 
 
-|  k| within_ss| silhouette|   gap| gap_se|
-|--:|---------:|----------:|-----:|------:|
-|  2|    74.336|      0.395| 0.220|  0.044|
-|  3|    55.113|      0.332| 0.232|  0.044|
-|  4|    42.993|      0.343| 0.237|  0.045|
-|  5|    35.824|      0.310| 0.218|  0.048|
-|  6|    28.760|      0.323| 0.253|  0.048|
+|  k| within_ss| silhouette|
+|--:|---------:|----------:|
+|  2|    74.336|      0.395|
+|  3|    55.113|      0.332|
+|  4|    42.993|      0.343|
+|  5|    35.863|      0.317|
+|  6|    28.760|      0.323|
 
-Figures f16–f18 show cluster selection, algorithm agreement and profiles. Test outcomes play no part in fitting or assigning groups.
+cluster_membership_tables:
 
-What I learned: Clustering groups similar measurements without using prediction labels.
 
-Open questions: Which innings exert disproportionate influence on regression?
+
+|linkage  |kmeans         | hierarchical| Freq|
+|:--------|:--------------|------------:|----:|
+|single   |Higher scoring |            1|   24|
+|single   |Lower scoring  |            1|   11|
+|single   |Higher scoring |            2|    0|
+|single   |Lower scoring  |            2|    1|
+|complete |Higher scoring |            1|   24|
+|complete |Lower scoring  |            1|    0|
+|complete |Higher scoring |            2|    0|
+|complete |Lower scoring  |            2|   12|
+|average  |Higher scoring |            1|   24|
+|average  |Lower scoring  |            1|    0|
+|average  |Higher scoring |            2|    0|
+|average  |Lower scoring  |            2|   12|
+
+Figures f16–f18 show selection, the average-linkage tree and venue group profiles. All learned profiles and centres use training seasons.
+
+What I learned: Clustering groups observations, while PCA and FA summarise variables.
+
+Open questions: Do the venue groups improve validation forecasts?
 
 ## Phase 7: Influence and unequal variance
 

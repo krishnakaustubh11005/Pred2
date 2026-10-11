@@ -1,0 +1,13 @@
+linkage,kmeans,hierarchical,Freq
+single,Higher scoring,1,24
+single,Lower scoring,1,11
+single,Higher scoring,2,0
+single,Lower scoring,2,1
+complete,Higher scoring,1,24
+complete,Lower scoring,1,0
+complete,Higher scoring,2,0
+complete,Lower scoring,2,12
+average,Higher scoring,1,24
+average,Lower scoring,1,0
+average,Higher scoring,2,0
+average,Lower scoring,2,12

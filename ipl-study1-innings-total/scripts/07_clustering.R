@@ -6,11 +6,9 @@ center <- colMeans(profiles[, profile_vars]); spread <- vapply(profiles[, profil
 z <- scale(as.matrix(profiles[, profile_vars]), center = center, scale = spread)
 rownames(z) <- profiles$venue
 ks <- 2:min(6, nrow(z) - 1)
-km <- lapply(ks, function(k) kmeans(z, centers = k, nstart = 50)); names(km) <- ks
+km <- lapply(ks, function(k) kmeans(z, centers = k, nstart = 25)); names(km) <- ks
 selection <- tibble(k = ks, within_ss = vapply(km, function(x) x$tot.withinss, numeric(1)),
  silhouette = vapply(km, function(x) mean(cluster::silhouette(x$cluster, dist(z))[, 3]), numeric(1)))
-gap <- cluster::clusGap(z, FUNcluster = function(x, k) list(cluster = kmeans(x, k, nstart = 20)$cluster), K.max = max(ks), B = 50)
-selection$gap <- gap$Tab[ks, "gap"]; selection$gap_se <- gap$Tab[ks, "SE.sim"]
 k <- selection$k[which.max(selection$silhouette)]; chosen <- km[[as.character(k)]]
 # Sort names by scoring level so cluster colours keep a stable interpretation.
 ordered <- order(chosen$centers[, "mean"])
@@ -19,12 +17,23 @@ profiles$cluster <- as.integer(rank_map[as.character(chosen$cluster)])
 labels <- paste0("Scoring group ", seq_len(k)); labels[1] <- "Lower scoring"; labels[k] <- "Higher scoring"
 profiles$cluster_name <- labels[profiles$cluster]
 centers <- chosen$centers[ordered, , drop = FALSE]
-hier <- hclust(dist(z), method = "ward.D2"); hc <- cutree(hier, k)
-tab <- table(chosen$cluster, hc); choose2 <- function(x) x * (x - 1) / 2
-expected <- sum(choose2(rowSums(tab))) * sum(choose2(colSums(tab))) / choose2(sum(tab))
-ari <- (sum(choose2(tab)) - expected) / ((sum(choose2(rowSums(tab))) + sum(choose2(colSums(tab)))) / 2 - expected)
-save_csv(selection, "cluster_selection"); save_csv(profiles, "venue_profiles")
-save_csv(tibble(k, adjusted_rand_index = ari, silhouette = max(selection$silhouette), gap_recommended = cluster::maxSE(gap$Tab[, "gap"], gap$Tab[, "SE.sim"], method = "firstSEmax")), "cluster_summary")
+# Class examples compare linkage choices on the same scaled distances.
+venue_distance <- dist(z, method = "euclidean")
+hier_single <- hclust(venue_distance, method = "single")
+hier_complete <- hclust(venue_distance, method = "complete")
+hier <- hclust(venue_distance, method = "average")
+hc <- cutree(hier, k = k)
+print(table(chosen$cluster, hc))
+print(chosen$centers)
+print(chosen$size)
+print(chosen$withinss)
+comparison <- bind_rows(lapply(list(single = hier_single, complete = hier_complete, average = hier), function(tree) {
+  as.data.frame(table(kmeans = profiles$cluster_name, hierarchical = cutree(tree, k = k)))
+}), .id = "linkage")
+save_csv(comparison, "cluster_membership_tables")
+save_csv(selection, "cluster_selection")
+save_csv(profiles, "venue_profiles")
+save_csv(tibble(k, silhouette = max(selection$silhouette), main_linkage = "average", random_starts = 25), "cluster_summary")
 cluster_fit <- list(profiles = profiles, center = center, spread = spread, centers = centers, labels = labels)
 assign_cluster <- function(data, fit) {
   cluster <- fit$profiles$cluster_name[match(data$venue, fit$profiles$venue)]
@@ -41,17 +50,22 @@ assign_cluster <- function(data, fit) {
   data$venue_cluster <- factor(cluster, levels = fit$labels); data
 }
 ctr <- assign_cluster(tr, cluster_fit); cva <- assign_cluster(va, cluster_fit)
-cluster_model <- checked_lm(update(formula(raw), . ~ . + venue_cluster), ctr, "Raw with venue groups")
+cluster_formula <- update(formula(raw), . ~ . + venue_cluster)
+check_ratio(nrow(ctr), ncol(model.matrix(cluster_formula, ctr)) - 1, "Multiple regression with venue groups")
+cluster_model <- lm(cluster_formula, data = ctr)
+print(summary(cluster_model))
 register_model("Multiple clusters", cluster_model, ctr, cva); models[["Multiple clusters"]]$cluster <- TRUE
-selection_long <- selection %>% select(k, within_ss, silhouette, gap) %>% pivot_longer(-k, names_to = "criterion", values_to = "value")
-selection_long <- bind_rows(selection_long,tibble(k=1L,criterion="gap",value=gap$Tab[1,"gap"])) %>%
- mutate(criterion=factor(criterion,levels=c("within_ss","silhouette","gap"),labels=c("Within-group variation","Silhouette separation","Gap versus random")))
-p <- ggplot(selection_long, aes(k, value)) + geom_line(colour = palette["batting"]) + geom_point(colour = palette["batting"]) +
- geom_errorbar(data=tibble(k=seq_len(nrow(gap$Tab)),criterion=factor("Gap versus random",levels=levels(selection_long$criterion)),value=gap$Tab[,"gap"],low=gap$Tab[,"gap"]-gap$Tab[,"SE.sim"],high=gap$Tab[,"gap"]+gap$Tab[,"SE.sim"]),aes(ymin=low,ymax=high),width=.12,colour="grey55") +
- geom_vline(xintercept = k, linetype = "dashed", colour = palette["bowling"]) + facet_wrap(~criterion, scales = "free_y") +
- labs(x = "Number of venue clusters", y = "Criterion value")
+selection_long <- selection %>% select(k, within_ss, silhouette) %>%
+ pivot_longer(-k, names_to = "criterion", values_to = "value") %>%
+ mutate(criterion = factor(criterion, levels = c("within_ss", "silhouette"),
+ labels = c("Within-group variation: elbow", "Silhouette separation")))
+p <- ggplot(selection_long, aes(k, value)) + geom_line(colour = palette["batting"]) +
+ geom_point(colour = palette["batting"]) + geom_vline(xintercept = k, linetype = "dashed", colour = palette["bowling"]) +
+ facet_wrap(~criterion, scales = "free_y") + labs(x = "Number of venue clusters", y = "Criterion value")
 save_plot(p, 16, "cluster_selection", glue::glue("Silhouette favours {k} venue groups"),
- "Elbow, silhouette and gap; dashed line shows the silhouette-based choice", "Results: cluster analysis", "Lower within-group variation and higher silhouette or gap support stronger grouping.", "Different criteria need not agree; the stated rule makes the choice reproducible.", TRUE)
+ "Classroom elbow and silhouette checks; dashed line marks the selected k", "Results: cluster analysis",
+ "Within-group variation falls as k grows; larger silhouette means better separation.",
+ "The recorded silhouette rule makes the choice reproducible.", TRUE)
 # Convert the dendrogram to segments for the shared ggplot theme.
 dend_segments <- function(h) {
   leaves <- setNames(seq_along(h$order), h$order); nodes <- list(); out <- list()
@@ -68,15 +82,19 @@ segments <- dend_segments(hier); leaf <- tibble(x = seq_along(hier$order), venue
 p <- ggplot(segments) + geom_segment(aes(x, y, xend = xend, yend = yend), colour = "grey45") +
  geom_point(data = leaf, aes(x, 0, colour = cluster), inherit.aes = FALSE, size = 3) +
  scale_x_continuous(breaks = leaf$x, labels = str_trunc(leaf$venue,22)) + scale_colour_viridis_d(end = .85) +
- labs(x = "Training venue (abbreviated; full names in venue profiles)", y = "Ward merge distance", colour = "K-means group") + theme(axis.text.x = element_text(angle = 65, hjust = 1, size = 7))
-save_plot(p, 17, "venue_dendrogram", glue::glue("Hierarchical and k-means agreement is {round(ari, 2)}"),
- "Ward.D2 tree with leaf colours from k-means groups", "Results: cluster analysis", "Nearby venues merge earlier; leaf colours indicate the alternative grouping.", "Agreement measures whether two algorithms tell a similar venue story.", TRUE)
+ labs(x = "Training venue (abbreviated; full names in venue profiles)", y = "Average-linkage merge distance", colour = "K-means group") + theme(axis.text.x = element_text(angle = 65, hjust = 1, size = 7))
+save_plot(p, 17, "venue_dendrogram", glue::glue("Average linkage provides a second view of {k} venue groups"),
+ "Average-linkage tree with leaf colours from k-means groups", "Results: cluster analysis", "Nearby venues merge earlier; leaf colours indicate the alternative grouping.", "Membership tables compare the grouping methods without treating labels as ordered numbers.", TRUE)
 cp <- profiles %>% group_by(cluster_name) %>% summarise(across(all_of(profile_vars), ~base::mean(.x)), .groups = "drop")
 mat <- scale(as.matrix(cp[, profile_vars]), center = center, scale = spread); rownames(mat) <- cp$cluster_name
 save_plot(heatmap_plot(mat, "Venue profile measurement", "Venue group"), 18, "cluster_profiles", glue::glue("Venue groups separate scoring levels across {k} profiles"),
  "Group averages expressed relative to training venue means", "Results: cluster analysis", "Blue is above the training mean and orange below it.", "Match-count differences also influence these historical groups.")
 saveRDS(cluster_fit, here::here("results", "cluster_fit.rds"))
-decision("D-011", 6, "Venue categories need a small training-derived representation.", "Individual venue dummies; standardised venue-profile groups.",
- "Fit Ward.D2 and k-means on training profiles; choose k by maximum silhouette and report elbow and gap as supporting checks. Assign unseen venues to frozen nearest centres.",
- "Groups reduce the number of categorical predictors while allowing venue-context differences.", "Venue sample sizes affect profiles. Unseen venues with no history use the training overall profile; cluster names describe averages, not fixed ground qualities.")
-phase_result(6, "Venue clustering", c("cluster_summary", "cluster_selection"), "Figures f16–f18 show cluster selection, algorithm agreement and profiles. Test outcomes play no part in fitting or assigning groups.", "Clustering groups similar measurements without using prediction labels.", "Which innings exert disproportionate influence on regression?")
+decision("D-021", 6, "Venue clustering must match the supplied class scripts.",
+ "Keep the earlier choices; compare the linkage and k-means methods taught in class.",
+ "Use scaled Euclidean profiles, single/complete/average linkage, k-means with the classroom random-start count, elbow and maximum silhouette. Compare memberships with tables. Supersedes D-011.",
+ "These procedures appear in CA.R, cluster analysis.txt and the Utilities example.",
+ "Clusters are descriptive. Small venue histories influence profiles; unseen venues retain the frozen-centre fallback.")
+phase_result(6, "Course-aligned venue clustering", c("cluster_summary", "cluster_selection", "cluster_membership_tables"),
+ "Figures f16–f18 show selection, the average-linkage tree and venue group profiles. All learned profiles and centres use training seasons.",
+ "Clustering groups observations, while PCA and FA summarise variables.", "Do the venue groups improve validation forecasts?")
