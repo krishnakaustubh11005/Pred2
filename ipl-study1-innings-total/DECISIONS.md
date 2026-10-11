@@ -227,3 +227,13 @@ Decision: Use log-response median forecasts, Goldfeld–Quandt tests on raw/log 
 Rationale: The group-weight construction and direct lm weights are visible in the supplied script.  
 Consequences or risks: Small or invalid group variances use pooled training variance. Do not apply an OLS test that silently ignores WLS weights; inspect its standardized residuals instead.  
 Status: active
+
+## D-024
+Date: 2026-10-11  
+Phase: 8  
+Context: Evaluation must retain basic checks and stay within the chosen course scope.  
+Options considered: Keep the earlier evaluation extensions; use validation selection and classical regression intervals.  
+Decision: Choose Exclude influential among fitted regressions by validation RMSE, with fewer predictors breaking exact ties. Keep baseline benchmarks and classical prediction intervals. Supersedes D-014.  
+Rationale: The student explicitly retained chronological evaluation and basic metrics; interval prediction appears in the Boston script.  
+Consequences or risks: The test season was examined previously. This revision is not a new untouched experiment. Log forecasts target a median; intervals depend on the fitted model assumptions.  
+Status: active

@@ -5,17 +5,12 @@ slides,13
 short_talk_minutes,10
 detailed_note_seconds_low,60
 detailed_note_seconds_high,90
-bootstrap_replicates,500
 parallel_replicates,100
-gap_replicates,50
 interval_percent,80
 confidence_percent,95
-vif_moderate,5
-vif_severe,10
 loading_label_threshold,0.3
 ratio_denominator,10
 interaction_significance,0.05
-uniqueness_lower_bound,0.005
 training_sd_plot_scale,1
 figure_height_inches,5
 figure_width_inches,8
@@ -26,3 +21,7 @@ team_history_window,10
 scheduled_death_overs,5
 XI_players,11
 inferred_top_order_players,3
+kmeans_random_starts,25
+cluster_minimum_k,2
+cluster_maximum_k,6
+uniqueness_warning_reference,0.005

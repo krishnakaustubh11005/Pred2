@@ -1,2 +1,2 @@
-model,nominal_coverage,empirical_coverage,mean_width,calibration_N,calibration_radius
-WLS,0.8,0.8378378378378378,95.32915638156562,74,1.4548504207686346
+model,nominal_coverage,empirical_coverage,mean_width,method
+Exclude influential,0.8,0.581081081081081,68.03630116076867,classical regression prediction interval

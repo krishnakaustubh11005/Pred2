@@ -1,2 +1,2 @@
-model,validation_rmse,refit_policy
-WLS,38.67061824531821,training fit retained; validation calibrates intervals
+model,validation_rmse,refit_policy,test_status
+Exclude influential,38.577035853021435,retain training fit; classical prediction intervals,previously assessed season; no test-guided selection in this revision

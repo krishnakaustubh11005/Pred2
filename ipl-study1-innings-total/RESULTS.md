@@ -359,48 +359,48 @@ What I learned: A diagnostic warning and better future predictions are different
 
 Open questions: Which permitted regression predicts the validation season best?
 
-## Phase 8: Frozen final evaluation
+## Phase 8: Course-aligned frozen evaluation
 
 final_selection:
 
 
 
-|model | validation_rmse|refit_policy                                           |
-|:-----|---------------:|:------------------------------------------------------|
-|WLS   |          38.671|training fit retained; validation calibrates intervals |
+|model               | validation_rmse|refit_policy                                        |test_status                                                           |
+|:-------------------|---------------:|:---------------------------------------------------|:---------------------------------------------------------------------|
+|Exclude influential |          38.577|retain training fit; classical prediction intervals |previously assessed season; no test-guided selection in this revision |
 
 test_metrics:
 
 
 
-|model             |   rmse|    mae|     r2|    low|   high|  p| adj_r2| validation_rmse| test_rank|
-|:-----------------|------:|------:|------:|------:|------:|--:|------:|---------------:|---------:|
-|B0 training mean  | 49.327| 39.972| -0.438| 42.299| 56.079|  0|     NA|          44.264|        14|
-|B1 venue history  | 46.570| 38.178| -0.282| 39.532| 53.743|  0|     NA|          43.034|        12|
-|Exclude curtailed | 40.970| 32.189|  0.008| 31.777| 51.746|  4|  0.099|          38.765|         9|
-|FA                | 40.828| 32.007|  0.015| 31.426| 51.670|  9|  0.099|          38.757|         4|
-|Log total         | 40.883| 32.059|  0.012| 31.566| 51.821|  4|  0.085|          38.786|         5|
-|Multiple AIC      | 40.717| 31.870|  0.020| 31.394| 51.565|  6|  0.105|          39.109|         1|
-|Multiple BIC      | 40.942| 32.174|  0.009| 31.751| 51.658|  4|  0.100|          38.728|         6|
-|Multiple clusters | 40.750| 32.015|  0.019| 31.536| 51.393|  7|  0.105|          39.113|         3|
-|Multiple Full     | 41.020| 31.951|  0.006| 31.312| 52.033| 17|  0.103|          38.786|        11|
-|Multiple selected | 40.717| 31.870|  0.020| 31.394| 51.565|  6|  0.105|          39.109|         1|
-|PCR               | 40.962| 32.065|  0.008| 31.729| 51.543|  9|  0.096|          39.043|         8|
-|Robust            | 40.971| 32.217|  0.008| 31.844| 51.644|  4|     NA|          38.706|        10|
+|model               |   rmse|    mae|     r2|  p| adj_r2| validation_rmse| test_rank|
+|:-------------------|------:|------:|------:|--:|------:|---------------:|---------:|
+|B0 training mean    | 49.327| 39.972| -0.438|  0|     NA|          44.264|        12|
+|B1 venue history    | 46.570| 38.178| -0.282|  0|     NA|          43.034|        10|
+|Exclude curtailed   | 40.911| 31.868|  0.011| 17|  0.102|          38.903|         3|
+|Exclude influential | 41.007| 32.084|  0.006| 17|  0.118|          38.577|         6|
+|FA                  | 40.934| 32.094|  0.010|  9|  0.099|          38.753|         4|
+|Log total           | 41.291| 32.391| -0.008| 17|  0.089|          39.100|         9|
+|Multiple AIC        | 40.717| 31.870|  0.020|  6|  0.105|          39.109|         1|
+|Multiple clusters   | 40.750| 32.015|  0.019|  7|  0.105|          39.113|         2|
+|Multiple full       | 41.020| 31.951|  0.006| 17|  0.103|          38.786|         7|
+|PCR                 | 40.962| 32.065|  0.008|  9|  0.096|          39.043|         5|
+|Simple              | 47.551| 38.815| -0.336|  1|  0.007|          43.077|        11|
+|WLS                 | 41.038| 31.929|  0.005| 17|  0.107|          38.782|         8|
 
 interval_summary:
 
 
 
-|model | nominal_coverage| empirical_coverage| mean_width| calibration_N| calibration_radius|
-|:-----|----------------:|------------------:|----------:|-------------:|------------------:|
-|WLS   |              0.8|              0.838|     95.329|            74|              1.455|
+|model               | nominal_coverage| empirical_coverage| mean_width|method                                   |
+|:-------------------|----------------:|------------------:|----------:|:----------------------------------------|
+|Exclude influential |              0.8|              0.581|     68.036|classical regression prediction interval |
 
-Figures f26–f28 show forecasts, frozen comparisons and temporal error. The validation winner is retained even if another candidate performs better on test.
+Figures f26–f28 report point predictions, class-style intervals, common-row comparisons and seasonal errors.
 
-What I learned: Honest evaluation separates model selection from performance reporting.
+What I learned: Keep the validation choice even if its test ranking differs.
 
-Open questions: How would performance change with verified weather forecasts and rule-era features?
+Open questions: Are the observed errors and interval coverage useful in practice?
 
 ## Phase 9: Documentation and presentation
 
