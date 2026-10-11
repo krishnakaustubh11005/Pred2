@@ -306,7 +306,7 @@ What I learned: Clustering groups observations, while PCA and FA summarise varia
 
 Open questions: Do the venue groups improve validation forecasts?
 
-## Phase 7: Influence and unequal variance
+## Phase 7: Course-aligned influence and unequal variance
 
 influence_thresholds:
 
@@ -314,48 +314,50 @@ influence_thresholds:
 
 |    N| predictors| studentized_cutoff| leverage_cutoff| cooks_cutoff| dffits_cutoff| dfbetas_cutoff| mahalanobis_cutoff|
 |----:|----------:|------------------:|---------------:|------------:|-------------:|--------------:|------------------:|
-| 1037|          4|                  3|            0.01|        0.004|         0.139|          0.062|             13.277|
+| 1037|         17|                  3|           0.035|        0.004|         0.263|          0.062|             33.409|
 
 heteroscedasticity_tests:
 
 
 
-|model                  |test               | statistic| p_value|
-|:----------------------|:------------------|---------:|-------:|
-|Raw                    |Breusch-Pagan      |    12.970|   0.011|
-|Raw                    |White fitted-value |    10.354|   0.006|
-|Raw                    |Goldfeld-Quandt    |     1.177|   0.033|
-|Log total              |Breusch-Pagan      |     8.399|   0.078|
-|Log total              |White fitted-value |     0.656|   0.720|
-|Log total              |Goldfeld-Quandt    |     1.031|   0.364|
-|WLS weighted residuals |Breusch-Pagan      |     7.375|   0.117|
-|WLS weighted residuals |White fitted-value |     4.165|   0.125|
-|WLS weighted residuals |Goldfeld-Quandt    |     0.980|   0.590|
+|model     |test            | statistic| p_value|
+|:---------|:---------------|---------:|-------:|
+|Raw       |Goldfeld–Quandt |     1.203|   0.020|
+|Log total |Goldfeld–Quandt |     1.053|   0.282|
+
+venue_variance:
+
+
+
+|venue_cluster  |   N| variance| predicted_sd|used_pooled_fallback |
+|:--------------|---:|--------:|------------:|:--------------------|
+|Lower scoring  |  78|  570.796|       23.891|FALSE                |
+|Higher scoring | 959|  928.331|       30.469|FALSE                |
 
 validation_metrics:
 
 
 
-|model             |  p| adj_r2|   rmse|    mae|     r2|
-|:-----------------|--:|------:|------:|------:|------:|
-|B0 training mean  |  0|     NA| 44.264| 36.366| -0.371|
-|B1 venue history  |  0|     NA| 43.034| 35.255| -0.296|
-|Simple            |  1|  0.007| 43.077| 35.332| -0.299|
-|Multiple Full     | 17|  0.103| 38.786| 30.897| -0.053|
-|Multiple AIC      |  6|  0.105| 39.109| 30.915| -0.071|
-|Multiple BIC      |  4|  0.100| 38.728| 30.804| -0.050|
-|Multiple selected |  6|  0.105| 39.109| 30.915| -0.071|
-|PCR               |  9|  0.096| 39.043| 30.796| -0.067|
-|FA                |  9|  0.099| 38.757| 30.735| -0.051|
-|Multiple clusters |  7|  0.105| 39.113| 30.964| -0.071|
-|Exclude curtailed |  4|  0.099| 38.765| 30.782| -0.052|
-|Robust            |  4|     NA| 38.706| 30.735| -0.049|
+|model               |  p| adj_r2|   rmse|    mae|     r2|
+|:-------------------|--:|------:|------:|------:|------:|
+|B0 training mean    |  0|     NA| 44.264| 36.366| -0.371|
+|B1 venue history    |  0|     NA| 43.034| 35.255| -0.296|
+|Simple              |  1|  0.007| 43.077| 35.332| -0.299|
+|Multiple full       | 17|  0.103| 38.786| 30.897| -0.053|
+|Multiple AIC        |  6|  0.105| 39.109| 30.915| -0.071|
+|PCR                 |  9|  0.096| 39.043| 30.796| -0.067|
+|FA                  |  9|  0.099| 38.753| 30.829| -0.051|
+|Multiple clusters   |  7|  0.105| 39.113| 30.964| -0.071|
+|Exclude curtailed   | 17|  0.102| 38.903| 30.877| -0.059|
+|Exclude influential | 17|  0.118| 38.577| 30.713| -0.042|
+|Log total           | 17|  0.089| 39.100| 31.343| -0.070|
+|WLS                 | 17|  0.107| 38.782| 30.900| -0.053|
 
-Figures f19–f25 inspect influence, treatment sensitivity, residual spread and robust uncertainty. A small p-value diagnoses an assumption; it does not prove that a remedy predicts better.
+Figures f19–f25 distinguish influence, case-removal sensitivity, residual spread and classical model summaries.
 
-What I learned: Uncertainty estimates and point forecasts can respond differently to a remedy.
+What I learned: A diagnostic warning and better future predictions are different claims.
 
-Open questions: Which candidate performs best on the reserved validation season?
+Open questions: Which permitted regression predicts the validation season best?
 
 ## Phase 8: Frozen final evaluation
 

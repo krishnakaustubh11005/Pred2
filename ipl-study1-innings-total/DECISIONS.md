@@ -207,3 +207,23 @@ Decision: Use scaled Euclidean profiles, single/complete/average linkage, k-mean
 Rationale: These procedures appear in CA.R, cluster analysis.txt and the Utilities example.  
 Consequences or risks: Clusters are descriptive. Small venue histories influence profiles; unseen venues retain the frozen-centre fallback.  
 Status: active
+
+## D-022
+Date: 2026-10-11  
+Phase: 7  
+Context: Influence analysis must use taught diagnostics.  
+Options considered: Keep the earlier alternatives; use classical diagnostics and labelled case-removal fits.  
+Decision: Retain valid extremes in the main fit, compare exclusion of curtailed or Cook-influential training cases, and keep all assessment rows. Supersedes D-012.  
+Rationale: The notes explain deletion diagnostics and the class R files demonstrate the selected measures.  
+Consequences or risks: Sensitivity exclusions are not a claim that flagged innings are erroneous. The existing Cook reference remains; the example's alternative reference is not silently substituted.  
+Status: active
+
+## D-023
+Date: 2026-10-11  
+Phase: 7  
+Context: Unequal variance remedies must follow Heteroskedasticity.R.  
+Options considered: Keep the previous variance modelling; use the class group-variance weighting example.  
+Decision: Use log-response median forecasts, Goldfeld–Quandt tests on raw/log OLS fits, and WLS inverse variances estimated by tapply from training venue groups. Supersedes D-013.  
+Rationale: The group-weight construction and direct lm weights are visible in the supplied script.  
+Consequences or risks: Small or invalid group variances use pooled training variance. Do not apply an OLS test that silently ignores WLS weights; inspect its standardized residuals instead.  
+Status: active
